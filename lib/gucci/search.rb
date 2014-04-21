@@ -18,8 +18,8 @@ module Gucci
       end
 
       def browser
-        #headless = Headless.new
-        #headless.start
+        headless = Headless.new
+        headless.start
         profile = Selenium::WebDriver::Firefox::Profile.new
         profile['browser.download.folderList'] = 2
         profile['browser.download.dir'] = @download_dir
