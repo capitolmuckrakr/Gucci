@@ -12,7 +12,7 @@ describe Gucci do
   #end
 
   it "should return a filing object" do
-    @filing = Gucci::House::Filing.new(300630565,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
+    @filing = Gucci::Filing.new(300630565,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
     @filing.should_not be_nil
   end
 
