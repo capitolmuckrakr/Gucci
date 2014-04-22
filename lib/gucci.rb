@@ -3,10 +3,19 @@ require "gucci/filing"
 require "gucci/search"
 
 module Gucci
-  def self.search(opts={})
-    Search.new(opts={})
+  module House
+    class Search
+    end
+    class Filing
+    end
   end
-  def self.filing(filing_id,opts={})
-    Filing.new(filing_id,opts={})
-  end
+  class Mapper < Hash
+    def method_missing(name)
+      return self[name] if key? name
+      super.method_missing name
+    end
+    def respond_to_missing?(name, include_private = false)
+      key? name || super
+    end
+  end  
 end
