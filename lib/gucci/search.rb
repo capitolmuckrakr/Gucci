@@ -4,7 +4,7 @@ require 'tmpdir'
 require 'date'
 
 module Gucci
-
+  module House
     class Search
 
       attr_accessor :download_dir, :search_params
@@ -67,8 +67,7 @@ module Gucci
         keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
         parsed_results = []
         results.each do |row|
-          row_hash = Hash[*keys.zip(row).flatten]
-          search_result = SearchResult.new(row_hash)
+          search_result = Gucci::Mapper[*keys.zip(row).flatten]
           if block_given?
             yield search_result
           else
@@ -122,19 +121,6 @@ module Gucci
         params
       end
 
-    end
-
-    class SearchResult
-      attr_reader :filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists
-      def initialize(row_hash)
-        @filing_id = row_hash[:filing_id]
-        @registrant_id = row_hash[:registrant_id]
-        @registrant_name = row_hash[:registrant_name]
-        @client_name = row_hash[:client_name]
-        @filing_year = row_hash[:filing_year]
-        @filing_period = row_hash[:filing_period]
-        @lobbyists = row_hash[:lobbyists].to_s.split("|").map{|l|l.to_s.strip} || nil
-      end
     end
 
       COUNTRIES = {
@@ -469,5 +455,5 @@ module Gucci
         'Registrant PPB Country' => COUNTRIES.values
       }
 
-
+  end
 end
