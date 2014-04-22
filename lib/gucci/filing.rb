@@ -3,7 +3,7 @@ require 'open-uri'
 require 'ensure/encoding'
 
 module Gucci
-
+  module House
     class Filing
 
       attr_accessor :xml, :download_dir
@@ -42,7 +42,7 @@ module Gucci
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
      def summary
-       summary_hash = Mapper.new
+       summary_hash = Gucci::Mapper.new
        begin
          parse.children.each do |node| #only one child we need
            if node.element? #should pass unless filing is malformed
@@ -71,22 +71,13 @@ module Gucci
        data
      end
 
-     class Mapper < Hash
-       def method_missing(name)
-         return self[name] if key? name
-         super.method_missing name
-       end
-       def respond_to_missing?(name, include_private = false)
-         key? name || super
-       end
-     end
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
      def issues
        begin
          multi = multinodes[0].dup
          multi.children.each do |m|
            if m.node_name != 'text'
-             issuefields = Mapper.new
+             issuefields = Gucci::Mapper.new
              m.children.map{ |i| issuefields[i.name.to_sym] = nil if i.children.count < 2 }
              m.children.map do |i|
                unless i.content.strip.empty?
@@ -97,7 +88,7 @@ module Gucci
              @lobbyists = []
              issuefields[:lobbyists].children.each do |l|
                next if l.content == 'N'
-               @lobbyist = Mapper.new
+               @lobbyist = Gucci::Mapper.new
                l.children.each do |f|
                  @lobbyist[f.name.to_sym] = nil
                  @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
@@ -124,7 +115,7 @@ module Gucci
      end
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
      def updates
-       @updates = Mapper.new
+       @updates = Gucci::Mapper.new
        multi = multinodes[1].dup
        multi.children.each do |m|
          if m.node_name != 'text'
@@ -137,7 +128,7 @@ module Gucci
            begin
              @updates[:inactive_lobbyists].children.each do |l|
                  next if l.content.empty?
-               @inactive_lobbyist = Mapper.new
+               @inactive_lobbyist = Gucci::Mapper.new
                l.children.each do |f|
                  @inactive_lobbyist[f.name.to_sym] = f.content
                end
@@ -184,7 +175,7 @@ module Gucci
            begin
              @updates[:affiliatedOrgs].children.each do |a|
                next if a.content.empty?
-               @affiliatedOrg = Mapper.new
+               @affiliatedOrg = Gucci::Mapper.new
                a.children.each do |f|
                  @affiliatedOrg[f.name.to_sym] = f.content
                end
@@ -198,7 +189,7 @@ module Gucci
            begin
              @updates[:foreignEntities].children.each do |a|
                next if a.content.empty?
-               @foreignEntity = Mapper.new
+               @foreignEntity = Gucci::Mapper.new
                a.children.each do |f|
                  @foreignEntity[f.name.to_sym] = f.content
                end
@@ -257,4 +248,5 @@ module Gucci
      end
 
     end
+  end
 end
