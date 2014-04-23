@@ -7,8 +7,8 @@ describe Gucci do
     @registration.stubs(:file_path).returns(File.join(File.dirname(__FILE__), 'data', '300611018.xml'))
     @report = Gucci::House::Filing.new(300630565,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
     @report.stubs(:file_path).returns(File.join(File.dirname(__FILE__), 'data', '300630565.xml'))
-    #@contribution = Gucci::House::Filing.new(700704476,:download_dir=>File.join(File.dirname(__FILE__), 'data')
-    #@contribution.stubs(:file_path).returns(File.join(File.dirname(__FILE__), 'data', '700704476.xml'))
+    @contribution = Gucci::House::Filing.new(700704476,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
+    @contribution.stubs(:file_path).returns(File.join(File.dirname(__FILE__), 'data', '700704476.xml'))
   end
 
   it "should return a report filing object" do
