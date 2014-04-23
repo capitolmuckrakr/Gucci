@@ -73,7 +73,7 @@ module Gucci
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
      def issues
        begin
-         multi = multinodes[0].dup
+         multi ||= multinodes[0].dup
          multi.children.each do |m|
            if m.node_name != 'text'
              issuefields = Gucci::Mapper.new
