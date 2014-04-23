@@ -67,7 +67,7 @@ module Gucci
         keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
         parsed_results = []
         parse_results.each do |row|
-          search_result = Gucci::Mapper[*keys.zip(row).flatten]
+          search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
           if block_given?
             yield search_result
           else
