@@ -12,7 +12,7 @@ module Gucci
 
       def initialize(filing_id,opts={})
         @filing_id = filing_id
-        @download_dir = opts[:download_dir]
+        @download_dir = opts[:download_dir] || Dir.tmpdir
         @parsingproblems = []
         @summary = {}
         @issues = []
@@ -251,7 +251,7 @@ module Gucci
      end
 
      def filing_url
-       filing_url_base + filing_id
+       filing_url_base + filing_id.to_s
      end
 
      def file_path
