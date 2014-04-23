@@ -325,7 +325,7 @@ module Gucci
 		"ZIM" => "ZIMBABWE"
       }
 
-      FILING_TYPES = {
+      REPORT_TYPES = {
         "MM" => "Mid-Year Report",
         "MA" => "Mid-Year Amendment Report",
         "MT" => "Mid-Year Termination Report",
@@ -440,7 +440,7 @@ module Gucci
       STATES = ["AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY"]
       VALID_PARAMS = {
         'Filing Period' => ["Mid-Year", "Year-End", "1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"],
-        'Filing Type' => FILING_TYPES.values,
+        'Filing Type' => REPORT_TYPES.values,
         'Filing Year' => (2009..Date.today.year).map{ |y| y },
         'Issue Code' => ISSUES.values,
         'Affiliated Country' => COUNTRIES.values,
