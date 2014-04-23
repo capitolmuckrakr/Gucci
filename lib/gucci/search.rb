@@ -1,6 +1,5 @@
 require 'watir-webdriver'
 require 'headless'
-require 'tmpdir'
 require 'date'
 
 module Gucci

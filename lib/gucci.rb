@@ -1,6 +1,7 @@
 require "gucci/version"
 require "gucci/filing"
 require "gucci/search"
+require 'tmpdir'
 
 module Gucci
   module House
