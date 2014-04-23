@@ -13,10 +13,10 @@ module Gucci
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @download_dir = opts[:download_dir] || Dir.tmpdir
-        @parsingproblems = []
         @summary = {}
         @issues = []
         @updates = {}
+        @parsingproblems = []
       end
 
       def download
