@@ -71,8 +71,9 @@ module Gucci
      end
 
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
-     def issues
+     def parse_issues
        begin
+         data = []
          multi ||= multinodes[0].dup
          multi.children.each do |m|
            if m.node_name != 'text'
@@ -104,13 +105,25 @@ module Gucci
                end
                issuefields[:specific_issues] = @descriptions
              end
-             @issues.push(issuefields)
+             data.push(issuefields)
            end
          end
-         @issues
+         data
        rescue Exception=>e
          parse_problem(e,'@issues')
        end
+     end
+     
+     def issues(&block)
+        parsed_issues = []
+        parse_issues.each do |row|
+          if block_given?
+            yield row
+          else
+            parsed_issues << row
+          end
+        end
+        block_given? ? nil : parsed_issues
      end
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
      def updates
