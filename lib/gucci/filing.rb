@@ -32,8 +32,8 @@ module Gucci
 
       def parse
         begin
-          @xml = Nokogiri::XML(File.open(file_path,"r"))
-          return @xml
+          @xml ||= Nokogiri::XML(File.open(file_path,"r"))
+          #return @xml
         rescue Exception => e
           puts e.message
           puts e.backtrace.inspect
@@ -42,14 +42,14 @@ module Gucci
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
      def summary
-       summary_hash = Gucci::Mapper.new
+       summary_hash ||= Gucci::Mapper.new
        begin
          parse.children.each do |node| #only one child we need
            if node.element? #should pass unless filing is malformed
              node.children.each do |childnode| # access top-level fields
                if childnode.children.count < 2 && childnode.node_name != 'text' #test for single-value fields such as registrantname, clientname, etc. Skip linefeeds.
                  begin
-                   summary_hash[childnode.name.to_sym] = nil
+                   summary_hash[childnode.name.to_sym] ||= nil
                    unless childnode.content.strip.empty?
                      begin
                        summary_hash[childnode.name.to_sym] = childnode.content #transform into hash
@@ -68,7 +68,6 @@ module Gucci
          parse_problem(e,'@summary')
        end
        data ||= summary_hash
-       data
      end
 
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
