@@ -111,7 +111,7 @@ module Gucci
              data.push(issuefields)
            end
          end
-         data
+         data || nil
        rescue Exception=>e
          parse_problem(e,'@issues')
        end
