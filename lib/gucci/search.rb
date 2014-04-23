@@ -55,7 +55,7 @@ module Gucci
         @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
       end
 
-      def results()
+      def parse_results()
         filings = []
         open("#{@download_dir}/Disclosures.CSV","r").each_line{|l| l.gsub!('"',''); filings << l.split("\t")[0..-2]}
         filings.shift
@@ -63,10 +63,10 @@ module Gucci
         return filings
       end
 
-      def parse_results(&block)
+      def results(&block)
         keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
         parsed_results = []
-        results.each do |row|
+        parse_results.each do |row|
           search_result = Gucci::Mapper[*keys.zip(row).flatten]
           if block_given?
             yield search_result
