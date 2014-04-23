@@ -33,11 +33,14 @@ module Gucci
       def parse
         begin
           @xml ||= Nokogiri::XML(File.open(file_path,"r"))
-          #return @xml
         rescue Exception => e
           puts e.message
           puts e.backtrace.inspect
         end
+      end
+      
+      def filing_type
+        parse.root.name
       end
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
