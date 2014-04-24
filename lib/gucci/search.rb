@@ -42,8 +42,8 @@ module Gucci
         end
         @browser.button(:name => 'cmdSearch').click
         selected_params.keys.sort.each do |param_order|
-          param_id = VALID_PARAMS.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
-          if VALID_PARAMS.keys.include?(selected_params[param_order])
+          param_id = VALID_DISCLOSURE_PARAMS.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
+          if VALID_DISCLOSURE_PARAMS.keys.include?(selected_params[param_order])
             @browser.select_list(:id => "#{param_id}").select "#{params[selected_params[param_order]]}"
           else
             @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
@@ -127,13 +127,13 @@ module Gucci
       end
 
       def validate_params(params)
-        raise ArgumentError, "At least one search parameter must be given, possible parameters are #{VALID_PARAMS.keys.join(', ')}" if params.values.all? { |x| x.to_s.empty? }
+        raise ArgumentError, "At least one search parameter must be given, possible parameters are #{VALID_DISCLOSURE_PARAMS.keys.join(', ')}" if params.values.all? { |x| x.to_s.empty? }
         params.delete_if { |k,v| v.to_s.empty? }
         raise ArgumentError, "No more than six search parameters are permitted" if params.keys.count > 6
         invalid_params = []
-        VALID_PARAMS.each_pair do |k,v|
+        VALID_DISCLOSURE_PARAMS.each_pair do |k,v|
           if params.keys.include?(k)
-            invalid_params.push("#{params[k]} is invalid for #{k}, permitted values are #{v.join(', ')}\n") unless VALID_PARAMS[k].include?( params[k] )
+            invalid_params.push("#{params[k]} is invalid for #{k}, permitted values are #{v.join(', ')}\n") unless VALID_DISCLOSURE_PARAMS[k].include?( params[k] )
           end
         end
         raise ArgumentError, "#{invalid_params.count} error(s)\n#{invalid_params.join.chomp}" unless invalid_params.empty?
@@ -458,7 +458,7 @@ module Gucci
       }
 
       STATES = ["AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY"]
-      VALID_PARAMS = {
+      VALID_DISCLOSURE_PARAMS = {
         'Filing Period' => ["Mid-Year", "Year-End", "1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"],
         'Filing Type' => REPORT_TYPES.values,
         'Filing Year' => (2009..Date.today.year).map{ |y| y },
