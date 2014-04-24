@@ -4,19 +4,16 @@ require 'ensure/encoding'
 
 module Gucci
   module House
+    FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
     class Filing
 
-      attr_accessor :xml, :download_dir
+      attr_accessor :download_dir, :xml
 
-      attr_reader :filing_id, :summary,  :issues, :updates, :parsingproblems
+      attr_reader :filing_id, :body
 
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @download_dir = opts[:download_dir] || Dir.tmpdir
-        @summary = {}
-        @issues = []
-        @updates = {}
-        @parsingproblems = []
       end
 
       def download
@@ -39,8 +36,9 @@ module Gucci
         end
       end
       
-      def filing_type
-        parse.root.name
+      def body
+        @body ||= filing_type == FILING_TYPES[0] ? Contribution.new(self) : nil
+        @body ||= filing_type == FILING_TYPES[2] ? Report.new(self) : nil
       end
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
@@ -72,12 +70,21 @@ module Gucci
        end
        data ||= summary_hash
      end
+     
+     class Report
+       
+       attr_reader :issues, :updates, :parsingproblems
+       
+       def initialize(parent)
+        @parent = parent
+        @parsingproblems = []
+       end
 
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
      def parse_issues
        begin
          data = []
-         multi ||= multinodes[0].dup
+         multi ||= @parent.multinodes[0].dup
          multi.children.each do |m|
            if m.node_name != 'text'
              issuefields = Gucci::Mapper.new
@@ -131,7 +138,7 @@ module Gucci
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
      def updates
        @updates = Gucci::Mapper.new
-       multi = multinodes[1].dup
+       multi = @parent.multinodes[1].dup
        multi.children.each do |m|
          if m.node_name != 'text'
            if m.children.count < 2
@@ -226,25 +233,38 @@ module Gucci
        problem["backtrace"] = e.backtrace.inspect.to_s
        parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
      end
-
-     def multinodes
-       multinodelist = []
-       parse.children.each do |node| #only one child
-         if node.element? #should pass unless filing is malformed or xslt
-           node.children.each do |childnode| # access top-level fields
-             if childnode.children.count > 1 && childnode.node_name != 'text' #skip single-value top level fields such as registrantname, clientname, etc. Skip linefeeds.
-               childnode.children.each do |m|
-                 m.children.map{ |i| i.remove if i.name == 'text' && i.blank? }
-                 m.children.map{ |i| i.children.map{ |i2| i2.remove if i2.name == 'text' && i2.blank? } }
-                 m.children.map{ |i| i.children.map{ |i2| i2.children.map{ |i3| i3.remove if i3.name == 'text' && i3.blank? } } }
-               end
-               multinodelist.push(childnode)
-             end
-           end
-         end
-       end
-       multinodelist
+     
      end
+
+     class Contribution
+        
+       attr_reader :pacs, :contributions
+       
+       def initialize(parent)
+        @parent = parent
+        @parsingproblems = []
+       end
+        
+     end
+
+  def multinodes
+    multinodelist = []
+    parse.children.each do |node| #only one child
+      if node.element? #should pass unless filing is malformed or xslt
+        node.children.each do |childnode| # access top-level fields
+          if childnode.children.count > 1 && childnode.node_name != 'text' #skip single-value top level fields such as registrantname, clientname, etc. Skip linefeeds.
+            childnode.children.each do |m|
+              m.children.map{ |i| i.remove if i.name == 'text' && i.blank? }
+              m.children.map{ |i| i.children.map{ |i2| i2.remove if i2.name == 'text' && i2.blank? } }
+              m.children.map{ |i| i.children.map{ |i2| i2.children.map{ |i3| i3.remove if i3.name == 'text' && i3.blank? } } }
+            end
+            multinodelist.push(childnode)
+          end
+        end
+      end
+    end
+    multinodelist
+  end
 
      def filing_url_base
        'http://disclosures.house.gov/ld/pdfform.aspx?id='
@@ -252,6 +272,10 @@ module Gucci
 
      def filing_url
        filing_url_base + filing_id.to_s
+     end
+     
+     def filing_type
+       parse.root.name.to_s.downcase.to_sym || nil
      end
 
      def file_path
