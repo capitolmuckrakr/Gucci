@@ -64,7 +64,8 @@ module Gucci
       end
 
       def results(&block)
-        keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
+        disclosure_keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
+        keys = disclosure_keys
         parsed_results = []
         parse_results.each do |row|
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
