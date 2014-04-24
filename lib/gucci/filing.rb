@@ -243,8 +243,26 @@ module Gucci
        def initialize(parent)
         @parent = parent
         @parsingproblems = []
+        @pacs_parsed = 0
        end
-        
+       
+       def multi
+         multi ||= @parent.multinodes
+       end
+       
+       def pacs
+        @pacs ||= []
+        if @pacs_parsed == 0
+          multi[0].children.each do |m|
+            if m.name != 'text'
+              @pacs.push m.children.children.text.strip if m.children.children.count > 0
+            end
+          end
+          @pacs_parsed = 1
+        end
+        @pacs
+       end
+       
      end
 
   def multinodes
