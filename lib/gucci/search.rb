@@ -25,7 +25,8 @@ module Gucci
         profile["browser.helperApps.neverAsk.saveToDisk"] = "text/csv, application/octet-stream"
         driver = Selenium::WebDriver.for :firefox, :profile => profile
         browser = Watir::Browser.new(driver)
-        browser.goto 'disclosures.house.gov/ld/ldsearch.aspx'
+        search_types = {:contribution_search => 'disclosures.house.gov/lc/lcsearch.aspx', :disclosure_search => 'disclosures.house.gov/ld/ldsearch.aspx' }
+        browser.goto search_types[:disclosure_search]
         return browser
       end
 
