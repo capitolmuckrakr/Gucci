@@ -76,8 +76,13 @@ module Gucci
         end
         block_given? ? nil : parsed_results
       end
-
+      
       def make_params(search_params)
+        make_disclosure_params(search_params)
+      end
+        
+
+      def make_disclosure_params(search_params)
         {
         'Registrant Name' => search_params[:registrant_name] || '', #validate?
         'Client Name' => search_params[:client_name] || '', #validate?
@@ -104,6 +109,20 @@ module Gucci
         'Lobbyists Full Name Inactive' => search_params[:lobbyist_inactive] || '', #validate?
         'Registrant Country' => search_params[:registrant_country] || '',
         'Registrant PPB Country' => search_params[:registrant_ppb_country] || ''
+        }
+      end
+      
+      def make_contribution_params(search_params)
+        {
+        'Organization Name' => search_params[:organization_name] || '',
+        'House ID' => search_params[:house_id] || '',
+        'Filing Period' => search_params[:filing_period] || '',
+        'Filing Type' => search_params[:filing_type] || '',
+        'PAC' => search_params[:pac] || '',
+        'Filing Year' => search_params[:filing_year] || '',
+        'Lobbyist Name' => search_params[:lobbyist_name] || '',
+        'Contact Name' => search_params[:contact_name] || '',
+        'Senate ID' => search_params[:senate_id] || ''    
         }
       end
 
