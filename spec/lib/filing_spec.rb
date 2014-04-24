@@ -28,7 +28,7 @@ describe Gucci do
   describe "#report_issues" do
 
     it "should return an array" do
-      iss = @report.issues
+      iss = @report.body.issues
       iss.should be_a_kind_of(Array)
     end
   end
@@ -36,7 +36,7 @@ describe Gucci do
   describe "#report_issue" do
 
     it "should return a mapped issue row" do
-      iss1 = @report.issues.first
+      iss1 = @report.body.issues.first
       iss1.should be_a_kind_of(Hash)
       iss1.issueAreaCode.should == "CAW"
     end
@@ -45,7 +45,7 @@ describe Gucci do
   describe "#report_lobbyists" do
 
     it "should return an array" do
-      lob = @report.issues.first.lobbyists
+      lob = @report.body.issues.first.lobbyists
       lob.should be_a_kind_of(Array)
     end
   end
@@ -53,7 +53,7 @@ describe Gucci do
   describe "#report_lobbyist" do
 
     it "should return a mapped lobbyist row" do
-      lob = @report.issues.first.lobbyists
+      lob = @report.body.issues.first.lobbyists
       lob.sort_by!{|v| v.lobbyistLastName}
       lob1 = lob.first
       lob1.should be_a_kind_of(Hash)
@@ -64,7 +64,7 @@ describe Gucci do
   describe "#report_updates" do
 
     it "should return the report mapped update row" do
-      ups = @report.updates
+      ups = @report.body.updates
       ups.should be_a_kind_of(Hash)
       ups.clientAddress.should == nil
     end
@@ -73,7 +73,7 @@ describe Gucci do
   describe "#report_inactive_lobbyists" do
 
     it "should return an array" do
-      inact_lobs = @report.updates.inactive_lobbyists
+      inact_lobs = @report.body.updates.inactive_lobbyists
       inact_lobs.should be_a_kind_of(Array)
       inact_lobs.count.should == 2
     end
@@ -82,7 +82,7 @@ describe Gucci do
   describe "#report_inactive_lobbyist" do
 
     it "should return a mapped inactive lobbyist row" do
-      inact_lobs = @report.updates.inactive_lobbyists
+      inact_lobs = @report.body.updates.inactive_lobbyists
       inact_lobs.sort_by!{|v| v.lastName}
       inact_lob1 = inact_lobs.first
       inact_lob1.should be_a_kind_of(Hash)
