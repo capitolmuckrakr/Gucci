@@ -1,3 +1,4 @@
+module Gucci
 module FilingUtils
   def multinodes
     multinodelist = []
@@ -17,4 +18,5 @@ module FilingUtils
     end
     multinodelist
   end
+end
 end
