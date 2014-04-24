@@ -473,6 +473,12 @@ module Gucci
         'Registrant Country' => COUNTRIES.values,
         'Registrant PPB Country' => COUNTRIES.values
       }
+      
+      VALID_CONTRIBUTION_PARAMS = {
+        'Filing Period' => ["Mid-Year", "Year-End"],
+        'Filing Type' => REPORT_TYPES.values.grep(/year/i).reject{|v| v=~/termination/i},
+        'Filing Year' => (2008..Date.today.year).map{ |y| y }
+      }  
 
   end
 end
