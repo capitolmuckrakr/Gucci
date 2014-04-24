@@ -263,6 +263,37 @@ module Gucci
         @pacs
        end
        
+       def parse_contribs
+         begin
+           data = []
+           multi[1].children.each do |m|
+             if m.name != 'text'
+               contribfields = Gucci::Mapper.new
+               m.children.map do |i|
+                 contribfields[i.name.to_sym] = nil if i.children.count < 2
+                 unless i.content.strip.empty?
+                   contribfields[i.name.to_sym] = i.content if i.children.count < 2
+                 end
+               end
+               data.push(contribfields)
+             end
+           end
+           data || nil
+         rescue Exception=>e
+           parse_problem(e,'@issues')
+         end          
+       end
+       def contributions(&block)
+        parsed_contribs = []
+        parse_contribs.each do |row|
+          if block_given?
+            yield row
+          else
+            parsed_contribs << row
+          end
+        end
+        block_given? ? nil : parsed_contribs
+       end
      end
 
   def multinodes
