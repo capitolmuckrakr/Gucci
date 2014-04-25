@@ -27,7 +27,7 @@ describe Gucci do
     it "should return an array of results" do
       search = Gucci::House::Search.new(:filing_year => Date.today.year, :issue_code => "DEFENSE")
       search.results.class.should be_a_kind_of(Array)
-      search.results[0].class.should == Gucci::Mapper
+      search.results.first.class.should == Gucci::Mapper
     end
     
   end
