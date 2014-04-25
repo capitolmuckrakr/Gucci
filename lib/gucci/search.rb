@@ -1,5 +1,6 @@
 require 'watir-webdriver'
 require 'headless'
+require 'fileutils'
 require 'date' #do we need this in ruby >=2.0 ?
 
 module Gucci
@@ -10,7 +11,9 @@ module Gucci
 
       def initialize(opts={})
         @download_dir = opts.delete(:download_dir) || Dir.tmpdir
-        File.delete("#{@download_dir}/Disclosures.CSV") if File.exists?("#{@download_dir}/Disclosures.CSV")
+        @search_type = opts[:contributions] ? :contributions : :disclosures
+        opts.delete(:contributions) if opts[:contributions]
+        @search_type == :contributions ? FileUtils.rm("#{@download_dir}/Contributions.CSV",:force=>true) : FileUtils.rm("#{@download_dir}/Disclosures.CSV",:force=>true)
         @browser = browser
         @search_params = validate_params(make_params(opts))
         search(@search_params)
@@ -25,8 +28,8 @@ module Gucci
         profile["browser.helperApps.neverAsk.saveToDisk"] = "text/csv, application/octet-stream"
         driver = Selenium::WebDriver.for :firefox, :profile => profile
         browser = Watir::Browser.new(driver)
-        search_types = {:contribution_search => 'disclosures.house.gov/lc/lcsearch.aspx', :disclosure_search => 'disclosures.house.gov/ld/ldsearch.aspx' }
-        browser.goto search_types[:disclosure_search]
+        urls = {:contributions => 'disclosures.house.gov/lc/lcsearch.aspx', :disclosures => 'disclosures.house.gov/ld/ldsearch.aspx' }
+        browser.goto urls[@search_type]
         return browser
       end
 
@@ -42,8 +45,8 @@ module Gucci
         end
         @browser.button(:name => 'cmdSearch').click
         selected_params.keys.sort.each do |param_order|
-          param_id = VALID_DISCLOSURE_PARAMS.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
-          if VALID_DISCLOSURE_PARAMS.keys.include?(selected_params[param_order])
+          param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
+          if valid_params.keys.include?(selected_params[param_order])
             @browser.select_list(:id => "#{param_id}").select "#{params[selected_params[param_order]]}"
           else
             @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
@@ -57,7 +60,9 @@ module Gucci
 
       def parse_results()
         filings = []
-        open("#{@download_dir}/Disclosures.CSV","r").each_line{|l| l.gsub!('"',''); filings << l.split("\t")[0..-2]}
+        results_file = @search_type == :contributions ? 'Contributions.CSV' : 'Disclosures.CSV'
+        results_delimiter = @search_type == :contributions ? "," : "\t" 
+        open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
         filings.shift
         filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest?
         return filings
@@ -65,9 +70,11 @@ module Gucci
 
       def results(&block)
         disclosure_keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
-        keys = disclosure_keys
+        contribution_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
+        keys = @search_type == :contributions ? contribution_keys : disclosure_keys
         parsed_results = []
         parse_results.each do |row|
+          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contributions
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
           if block_given?
             yield search_result
@@ -79,10 +86,9 @@ module Gucci
       end
       
       def make_params(search_params)
-        make_disclosure_params(search_params)
+        @search_type == :contributions ? make_contribution_params(search_params) : make_disclosure_params(search_params)
       end
-        
-
+      
       def make_disclosure_params(search_params)
         {
         'Registrant Name' => search_params[:registrant_name] || '', #validate?
@@ -126,15 +132,19 @@ module Gucci
         'Senate ID' => search_params[:senate_id] || ''    
         }
       end
+      
+      def valid_params
+        @search_type == :contributions ? VALID_CONTRIBUTION_PARAMS : VALID_DISCLOSURE_PARAMS
+      end
 
       def validate_params(params)
-        raise ArgumentError, "At least one search parameter must be given, possible parameters are #{VALID_DISCLOSURE_PARAMS.keys.join(', ')}" if params.values.all? { |x| x.to_s.empty? }
+        raise ArgumentError, "At least one search parameter must be given, possible parameters are #{valid_params.keys.join(', ')}" if params.values.all? { |x| x.to_s.empty? }
         params.delete_if { |k,v| v.to_s.empty? }
         raise ArgumentError, "No more than six search parameters are permitted" if params.keys.count > 6
         invalid_params = []
-        VALID_DISCLOSURE_PARAMS.each_pair do |k,v|
+        valid_params.each_pair do |k,v|
           if params.keys.include?(k)
-            invalid_params.push("#{params[k]} is invalid for #{k}, permitted values are #{v.join(', ')}\n") unless VALID_DISCLOSURE_PARAMS[k].include?( params[k] )
+            invalid_params.push("#{params[k]} is invalid for #{k}, permitted values are #{v.join(', ')}\n") unless valid_params[k].include?( params[k] )
           end
         end
         raise ArgumentError, "#{invalid_params.count} error(s)\n#{invalid_params.join.chomp}" unless invalid_params.empty?
