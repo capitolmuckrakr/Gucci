@@ -13,6 +13,8 @@ module Gucci
 
       def initialize(filing_id,opts={})
         @filing_id = filing_id
+        @download_type = opts[:contribution] ? :contribution : :disclosure
+        opts.delete(:contribution) if opts[:contribution]
         @download_dir = opts[:download_dir] || Dir.tmpdir
       end
 
@@ -315,8 +317,16 @@ module Gucci
     multinodelist
   end
 
-     def filing_url_base
+     def disclosure_url_base
        'http://disclosures.house.gov/ld/pdfform.aspx?id='
+     end
+     
+     def contribution_url_base
+        'http://disclosures.house.gov/lc/xmlform.aspx?id='
+     end
+     
+     def filing_url_base
+       @download_type == :contribution ? contribution_url_base : disclosure_url_base
      end
 
      def filing_url
