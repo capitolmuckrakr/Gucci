@@ -40,7 +40,7 @@ module Gucci
       end
       
       def body
-        @body ||= filing_type == FILING_TYPES[0] ? Contribution.new(self) : nil
+        @body ||= filing_type == FILING_TYPES[0] ? Contribution.new(filing_id,@opts) : nil
         #@body ||= filing_type == FILING_TYPES[2] ? Report.new(self) : nil
         @body ||= filing_type == FILING_TYPES[2] ? Report.new(filing_id,@opts) : nil
       end
@@ -75,65 +75,6 @@ module Gucci
         data ||= summary_hash
       end
      
-     class Contribution
-        
-       attr_reader :pacs, :contributions
-       
-       def initialize(parent)
-        @parent = parent
-        @parsingproblems = []
-        @pacs_parsed = 0
-       end
-       
-       def multi
-         multi ||= @parent.multinodes
-       end
-       
-       def pacs
-        @pacs ||= []
-        if @pacs_parsed == 0
-          multi[0].children.each do |m|
-            if m.name != 'text'
-              @pacs.push m.children.children.text.strip if m.children.children.count > 0
-            end
-          end
-          @pacs_parsed = 1
-        end
-        @pacs
-       end
-       
-       def parse_contribs
-         begin
-           data = []
-           multi[1].children.each do |m|
-             if m.name != 'text'
-               contribfields = Gucci::Mapper.new
-               m.children.map do |i|
-                 contribfields[i.name.to_sym] = nil if i.children.count < 2
-                 unless i.content.strip.empty?
-                   contribfields[i.name.to_sym] = i.content if i.children.count < 2
-                 end
-               end
-               data.push(contribfields)
-             end
-           end
-           data || nil
-         rescue Exception=>e
-           parse_problem(e,'@issues')
-         end          
-       end
-       def contributions(&block)
-        parsed_contribs = []
-        parse_contribs.each do |row|
-          if block_given?
-            yield row
-          else
-            parsed_contribs << row
-          end
-        end
-        block_given? ? nil : parsed_contribs
-       end
-     end
 
       def multinodes
         multinodelist = []
@@ -351,6 +292,70 @@ module Gucci
       end
      
     end
-
+    
+    class Contribution < Filing
+        
+      attr_reader :pacs, :contributions
+       
+      def initialize(filing_id,opts={})
+        @filing_id = filing_id
+        @opts = opts
+        @parsingproblems = []
+        @download_type = @opts[:contribution] ? :contribution : :disclosure
+        @opts.delete(:contribution) if @opts[:contribution]
+        @download_dir = @opts[:download_dir] || Dir.tmpdir 
+        @pacs_parsed = 0
+      end
+       
+      def multi
+        multi ||= multinodes
+      end
+       
+      def pacs
+        @pacs ||= []
+        if @pacs_parsed == 0
+          multi[0].children.each do |m|
+            if m.name != 'text'
+              @pacs.push m.children.children.text.strip if m.children.children.count > 0
+            end
+          end
+          @pacs_parsed = 1
+        end
+        @pacs
+      end
+       
+      def parse_contribs
+        begin
+          data = []
+            multi[1].children.each do |m|
+              if m.name != 'text'
+                contribfields = Gucci::Mapper.new
+                m.children.map do |i|
+                  contribfields[i.name.to_sym] = nil if i.children.count < 2
+                  unless i.content.strip.empty?
+                    contribfields[i.name.to_sym] = i.content if i.children.count < 2
+                  end
+                end
+                data.push(contribfields)
+              end
+            end
+            data || nil
+        rescue Exception=>e
+          parse_problem(e,'@issues')
+        end          
+      end
+      
+      def contributions(&block)
+        parsed_contribs = []
+        parse_contribs.each do |row|
+          if block_given?
+            yield row
+          else
+            parsed_contribs << row
+          end
+        end
+        block_given? ? nil : parsed_contribs
+      end
+    end
   end
 end
