@@ -14,8 +14,6 @@ module Gucci
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @opts = opts
-        @download_type = @opts[:contribution] ? :contribution : :disclosure
-        @opts.delete(:contribution) if @opts[:contribution]
         @download_dir = @opts[:download_dir] || Dir.tmpdir
       end
 
@@ -112,7 +110,7 @@ module Gucci
       end
      
       def filing_url_base
-        @download_type == :contribution ? contribution_url_base : disclosure_url_base
+        @filing_id.to_s[0] == '7' ? contribution_url_base : disclosure_url_base
       end
 
       def filing_url
@@ -140,8 +138,6 @@ module Gucci
         @filing_id = filing_id
         @opts = opts
         @parsingproblems = []
-        @download_type = @opts[:contribution] ? :contribution : :disclosure
-        @opts.delete(:contribution) if @opts[:contribution]
         @download_dir = @opts[:download_dir] || Dir.tmpdir
         @issues_parsed = 0
       end
@@ -272,8 +268,6 @@ module Gucci
         @filing_id = filing_id
         @opts = opts
         @parsingproblems = []
-        @download_type = @opts[:contribution] ? :contribution : :disclosure
-        @opts.delete(:contribution) if @opts[:contribution]
         @download_dir = @opts[:download_dir] || Dir.tmpdir        
       end
 
@@ -435,8 +429,6 @@ module Gucci
         @filing_id = filing_id
         @opts = opts
         @parsingproblems = []
-        @download_type = @opts[:contribution] ? :contribution : :disclosure
-        @opts.delete(:contribution) if @opts[:contribution]
         @download_dir = @opts[:download_dir] || Dir.tmpdir 
         @pacs_parsed = 0
       end
