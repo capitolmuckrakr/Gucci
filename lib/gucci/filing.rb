@@ -3,8 +3,10 @@ require 'open-uri'
 require 'ensure/encoding'
 
 module Gucci
+
   module House
     FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
+    
     class Filing
 
       attr_accessor :download_dir, :xml
@@ -36,20 +38,20 @@ module Gucci
           puts e.backtrace.inspect
         end
       end
-      
+
       def body
         @body ||= filing_type == FILING_TYPES[0] ? Contribution.new(filing_id,@opts) : nil
         @body ||= filing_type == FILING_TYPES[1] ? Registration.new(filing_id,@opts) : nil
         @body ||= filing_type == FILING_TYPES[2] ? Report.new(filing_id,@opts) : nil
       end
-      
+
       def parse_problem(e,problemfield)
         problem = {}
         problem["field"] = problemfield
         problem["message"] = e.message.to_s
         problem["backtrace"] = e.backtrace.inspect.to_s
         parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
-      end      
+      end
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
       def summary
@@ -80,7 +82,6 @@ module Gucci
         end
         data ||= summary_hash
       end
-     
 
       def multinodes
         multinodelist = []
@@ -97,18 +98,23 @@ module Gucci
               end
             end
           end
-        end 
+        end
         multinodelist
+      end
+
+      def multi(n)
+        @n = n
+        multi ||= multinodes[@n]
       end
 
       def disclosure_url_base
         'http://disclosures.house.gov/ld/pdfform.aspx?id='
       end
-     
+
       def contribution_url_base
          'http://disclosures.house.gov/lc/xmlform.aspx?id='
       end
-     
+
       def filing_url_base
         @filing_id.to_s[0] == '7' ? contribution_url_base : disclosure_url_base
       end
@@ -116,7 +122,7 @@ module Gucci
       def filing_url
         filing_url_base + filing_id.to_s
       end
-     
+
       def filing_type
         parse.root.name.to_s.downcase.to_sym || nil
       end
@@ -130,10 +136,11 @@ module Gucci
       end
 
     end
+
     class Registration < Filing
 
       attr_reader :lobbyists,:issues,:affiliatedOrgs,:foreignEntities,:parsingproblems
-      
+
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @opts = opts
@@ -141,35 +148,32 @@ module Gucci
         @download_dir = @opts[:download_dir] || Dir.tmpdir
         @issues_parsed = 0
       end
-      
-      def multi
-        multi ||= multinodes
-      end
-      
-      def parselobbyists
+
+      def parsefields(n)
+        @n = n
         begin
           data = []
-          multi[0].children.each do |m|
+          multi(@n).children.each do |m|
             if m.name != 'text'
-              lobbyistfields = Gucci::Mapper.new
+              parsedfields = Gucci::Mapper.new
               m.children.map do |m1|
-                lobbyistfields[m1.name.to_sym] = nil
+                parsedfields[m1.name.to_sym] = nil
                 unless m1.content.strip.empty?
-                  lobbyistfields[m1.name.to_sym] = m1.content
+                  parsedfields[m1.name.to_sym] = m1.content
                 end
               end
-              data.push(lobbyistfields)
+              data.push(parsedfields)
             end
           end
           data || nil
         rescue Exception=>e
-          parse_problem(e,'@lobbyists')
+          parse_problem(e,'parsedfields')
         end
       end
-      
+
       def lobbyists(&block)
         parsed_lobbyists = []
-        parselobbyists.each do |row|
+        parsefields(0).each do |row|
           if block_given?
             yield row
           else
@@ -178,31 +182,10 @@ module Gucci
         end
         block_given? ? nil : parsed_lobbyists
       end
-      
-      def parseaffiliatedOrgs
-        begin
-          data = []
-          multi[2].children.each do |m|
-            if m.name != 'text'
-              affiliatedOrgfields = Gucci::Mapper.new
-              m.children.map do |m1|
-                affiliatedOrgfields[m1.name.to_sym] = nil
-                unless m1.content.strip.empty?
-                  affiliatedOrgfields[m1.name.to_sym] = m1.content
-                end
-              end
-              data.push(affiliatedOrgfields)
-            end
-          end
-          data || nil
-        rescue Exception=>e
-          parse_problem(e,'@affiliatedOrgs')
-        end
-      end
-      
+
       def affiliatedOrgs(&block)
         parsed_affiliatedOrgs = []
-        parseaffiliatedOrgs.each do |row|
+        parsefields(2).each do |row|
           if block_given?
             yield row
           else
@@ -212,31 +195,9 @@ module Gucci
         block_given? ? nil : parsed_affiliatedOrgs
       end
 
-      
-      def parseforeignEntities
-        begin
-          data = []
-          multi[3].children.each do |m|
-            if m.name != 'text'
-              foreignEntityfields = Gucci::Mapper.new
-              m.children.map do |m1|
-                foreignEntityfields[m1.name.to_sym] = nil
-                unless m1.content.strip.empty?
-                  foreignEntityfields[m1.name.to_sym] = m1.content
-                end
-              end
-              data.push(foreignEntityfields)
-            end
-          end
-          data || nil
-        rescue Exception=>e
-          parse_problem(e,'@foreignEntities')
-        end
-      end
-      
       def foreignEntities(&block)
         parsed_foreignEntities = []
-        parseforeignEntities.each do |row|
+        parsefields(3).each do |row|
           if block_given?
             yield row
           else
@@ -245,10 +206,11 @@ module Gucci
         end
         block_given? ? nil : parsed_foreignEntities
       end
+
       def issues
         @issues ||= []
         if @issues_parsed == 0
-          multi[1].children.each do |m|
+          multi(1).children.each do |m|
             if m.name != 'text'
               @issues.push m.text if m.children.count > 0
             end
@@ -261,14 +223,14 @@ module Gucci
     end
 
     class Report < Filing
-       
+
       attr_reader :issues, :updates, :parsingproblems
-       
+
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @opts = opts
         @parsingproblems = []
-        @download_dir = @opts[:download_dir] || Dir.tmpdir        
+        @download_dir = @opts[:download_dir] || Dir.tmpdir
       end
 
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
@@ -314,7 +276,7 @@ module Gucci
           parse_problem(e,'@issues')
         end
       end
-     
+
       def issues(&block)
         parsed_issues = []
         parse_issues.each do |row|
@@ -326,6 +288,7 @@ module Gucci
         end
         block_given? ? nil : parsed_issues
       end
+
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
       def updates
         @updates = Gucci::Mapper.new
@@ -417,26 +380,24 @@ module Gucci
         @updates
       end
 
-
-     
     end
-    
+
     class Contribution < Filing
-        
+
       attr_reader :pacs, :contributions, :parsingproblems
-       
+
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @opts = opts
         @parsingproblems = []
-        @download_dir = @opts[:download_dir] || Dir.tmpdir 
+        @download_dir = @opts[:download_dir] || Dir.tmpdir
         @pacs_parsed = 0
       end
-       
+
       def multi
         multi ||= multinodes
       end
-       
+
       def pacs
         @pacs ||= []
         if @pacs_parsed == 0
@@ -449,7 +410,7 @@ module Gucci
         end
         @pacs
       end
-       
+
       def parse_contribs
         begin
           data = []
@@ -468,9 +429,9 @@ module Gucci
           data || nil
         rescue Exception=>e
           parse_problem(e,'@issues')
-        end          
+        end
       end
-      
+
       def contributions(&block)
         parsed_contribs = []
         parse_contribs.each do |row|
@@ -483,5 +444,7 @@ module Gucci
         block_given? ? nil : parsed_contribs
       end
     end
+
   end
+
 end
