@@ -14,7 +14,11 @@ I. Lobbying disclosures
 
 Perform a search for form LD1 or LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
 
-    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year =2013
+    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013
+
+II. Contribution disclosures
+
+Perform a search for form LD203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
 
 
 The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, which is simply an array of search result objects:
