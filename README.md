@@ -6,13 +6,16 @@ Gucci::House::Search is a Ruby wrapper around the lobbying and contribution sear
 
 ## Usage
 
-### Example
+### Examples
 
     require 'gucci'
 
-Perform a search for form LD1 and LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
+I. Lobbying disclosures
 
-    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => "2013")
+Perform a search for form LD1 or LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
+
+    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year =2013
+
 
 The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, which is simply an array of search result objects:
 
@@ -66,25 +69,38 @@ Get information from the filing:
 
 ### Search parameters
 
-The following search parameters are available:
+The following search parameters are available for lobbying disclosures:
 
-- `:committee_id` (The nine-character committee ID assigned by the FEC)
-    - examples: "C00499202", "C00130187"
-- `:committee_name`
-    - examples: "Restore Our Future", "Obama for America"
-- `:state` (Two-character state abbreviation)
-    - examples: "MA", "FL"
-- `:party` (Three-character party abbreviation)
-    - examples: "REP", "DEM"
-- `:committee_type` (One-character committee type. [See a list of committee types](http://www.fec.gov/finance/disclosure/metadata/CommitteeTypeCodes.shtml))
-    - examples: "H", "P"
-- `:report_type` ([See a list of report types](http://www.fec.gov/finance/disclosure/metadata/ReportTypeCodes.shtml))
-    - examples: "M4", "Q1"
-- `:date` (A Ruby Date object)
-- `:form_type` ([See the FEC's electronic filing search for a list of form types](http://www.fec.gov/finance/disclosure/efile_search.shtml))
-    - examples: "F3", "F24"
+-`:registrant_name`
+-`:client_name`
+-`:house_id`
+-`:filing_period`
+-`:filing_type`
+-`:filing_year`
+-`:issue_code`
+-`:lobbyist_name`
+-`:affiliated_country`
+-`:affiliated_name`
+-`:amount_reported`
+-`:client_country`
+-`:client_ppb_country`
+-`:client_state`
+-`:foreign_entity_ppb_country`
+-`:foreign_entity_country`
+-`:foreign_entity_name`
+-`:foreign_entity_ownership`
+-`:government_entity`
+-`:issue_data`
+-`:lobbyist_covered`
+-`:lobbyist_position`
+-`:lobbyist_inactive`
+-`:registrant_country`
+-`:registrant_ppb_country`
+
+
   
-Any number of these parameters may be used. However, the FEC's search functionality has some limitations:
+
+Up to five of these parameters may be used. However, the FEC's search functionality has some limitations:
 
 - All other parameters are ignored when `:committee_id` is used.
 - `:form_type` cannot be used by itself; another parameter must be used with it.
