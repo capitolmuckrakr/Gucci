@@ -75,31 +75,31 @@ Get information from the filing:
 
 The following search parameters are available for lobbying disclosures:
 
--`:registrant_name`
--`:client_name`
--`:house_id`
--`:filing_period`
--`:filing_type`
--`:filing_year`
--`:issue_code`
--`:lobbyist_name`
--`:affiliated_country`
--`:affiliated_name`
--`:amount_reported`
--`:client_country`
--`:client_ppb_country`
--`:client_state`
--`:foreign_entity_ppb_country`
--`:foreign_entity_country`
--`:foreign_entity_name`
--`:foreign_entity_ownership`
--`:government_entity`
--`:issue_data`
--`:lobbyist_covered`
--`:lobbyist_position`
--`:lobbyist_inactive`
--`:registrant_country`
--`:registrant_ppb_country`
+- `:registrant_name`
+- `:client_name`
+- `:house_id`
+- `:filing_period`
+- `:filing_type`
+- `:filing_year`
+- `:issue_code`
+- `:lobbyist_name`
+- `:affiliated_country`
+- `:affiliated_name`
+- `:amount_reported`
+- `:client_country`
+- `:client_ppb_country`
+- `:client_state`
+- `:foreign_entity_ppb_country`
+- `:foreign_entity_country`
+- `:foreign_entity_name`
+- `:foreign_entity_ownership`
+- `:government_entity`
+- `:issue_data`
+- `:lobbyist_covered`
+- `:lobbyist_position`
+- `:lobbyist_inactive`
+- `:registrant_country`
+- `:registrant_ppb_country`
 
 
   
