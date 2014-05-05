@@ -7,5 +7,8 @@ module Gucci
     def respond_to_missing?(name, include_private = false)
       key? name || super
     end
+    def empty_record?
+      self.values.join.empty?
+    end
   end
 end
