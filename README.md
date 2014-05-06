@@ -1,6 +1,6 @@
 # Gucci
 
-Gucci provides a way to search, download and parse lobbying and lobbyist contribution filings from the Clerk of the House of Representatives.
+Gucci provides a way to search, download and parse lobbying and registered lobbyist contribution filings from the Clerk of the House of Representatives.
 
 Gucci::House::Search is a Ruby wrapper around the lobbying and contribution search forms on the Clerk's website (http://disclosures.house.gov/ld/ldsearch.aspx and http://disclosures.house.gov/lc/lcsearch.aspx).
 
@@ -14,30 +14,36 @@ I. Lobbying disclosures
 
 Perform a search for form LD1 or LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
 
-    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013
+    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013)
 
 II. Contribution disclosures
 
 Perform a search for form LD203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
 
+    search = Gucci::House::Search.new(:organization_name => "Lockheed Martin", :filing_year => 2013, :contributions => true)
 
-The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, which is simply an array of search result objects:
+The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, an array of search result objects:
 
     results = search.results
     results.size
     => 100
 
-Each `Fech::SearchResult` object has the following attributes:
+Each result object has the following attributes:
 
-- amended_by
-- committee_id
-- committee_name
-- date_filed
-- date_format
-- description
+For lobbying filings:
 - filing_id
-- form_type
-- period
+- registrant_id
+- registrant_name
+- client_name
+- filing_year
+- filing_period
+- lobbyists
+
+For contribution filings:
+- filing_id
+- house_id
+- organization_name
+- remaining_items
 
 You can now work with the results as you would any Ruby array.
 
