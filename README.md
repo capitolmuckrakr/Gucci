@@ -79,7 +79,7 @@ Get information from the filing:
 
 ### Search parameters
 
-The following search parameters are available for lobbying disclosures:
+The following search parameters are available for lobbying filings:
 
 - `:registrant_name`
 - `:client_name`
@@ -107,10 +107,19 @@ The following search parameters are available for lobbying disclosures:
 - `:registrant_country`
 - `:registrant_ppb_country`
 
+The following search parameters are available for contribution filings:
 
-  
+- `:organization_name`
+- `:house_id`
+- `:filing_period`
+- `:filing_type`
+- `:pac`
+- `:filing_year`
+- `:lobbyist_name`
+- `:contact_name`
+- `:senate_id`
 
-Up to five of these parameters may be used. However, the FEC's search functionality has some limitations:
+Up to five parameters may be used. However, the FEC's search functionality has some limitations:
 
 - All other parameters are ignored when `:committee_id` is used.
 - `:form_type` cannot be used by itself; another parameter must be used with it.
