@@ -20,4 +20,19 @@ module Filingbody
       parse_problem(e,'parsedfields')
     end
   end
+
+  def bodymethod(name,n)
+    #attr_reader name
+    define_method("#{name}") do |&block|
+      parsed = []
+      parsefields(n).each do |row|
+        if block_given?
+          yield row
+        else
+          parsed << row
+        end
+      end
+      block_given? ? nil : parsed
+    end
+  end
 end
