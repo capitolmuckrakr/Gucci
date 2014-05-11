@@ -1,4 +1,4 @@
-module FilingBody
+module Filingbody
   def parsefields(n)
     @n = n
     begin
