@@ -6,7 +6,7 @@ module Gucci
 
   module House
     FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
-    
+
     class Filing
 
       attr_accessor :download_dir, :xml
@@ -172,39 +172,39 @@ module Gucci
       end
 
       def lobbyists(&block)
-        parsed_lobbyists = []
+        parsed = []
         parsefields(0).each do |row|
           if block_given?
             yield row
           else
-            parsed_lobbyists << row
+            parsed << row
           end
         end
-        block_given? ? nil : parsed_lobbyists
+        block_given? ? nil : parsed
       end
 
       def affiliatedOrgs(&block)
-        parsed_affiliatedOrgs = []
+        parsed = []
         parsefields(2).each do |row|
           if block_given?
             yield row
           else
-            parsed_affiliatedOrgs << row
+            parsed << row
           end
         end
-        block_given? ? nil : parsed_affiliatedOrgs
+        block_given? ? nil : parsed
       end
 
       def foreignEntities(&block)
-        parsed_foreignEntities = []
+        parsed = []
         parsefields(3).each do |row|
           if block_given?
             yield row
           else
-            parsed_foreignEntities << row
+            parsed << row
           end
         end
-        block_given? ? nil : parsed_foreignEntities
+        block_given? ? nil : parsed
       end
 
       def issues
