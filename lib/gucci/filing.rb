@@ -150,42 +150,9 @@ module Gucci
         @parsingproblems = []
         @download_dir = @opts[:download_dir] || Dir.tmpdir
         @issues_parsed = 0
-      end
-
-      def lobbyists(&block)
-        parsed = []
-        parsefields(0).each do |row|
-          if block_given?
-            yield row
-          else
-            parsed << row
-          end
-        end
-        block_given? ? nil : parsed
-      end
-
-      def affiliatedOrgs(&block)
-        parsed = []
-        parsefields(2).each do |row|
-          if block_given?
-            yield row
-          else
-            parsed << row
-          end
-        end
-        block_given? ? nil : parsed
-      end
-
-      def foreignEntities(&block)
-        parsed = []
-        parsefields(3).each do |row|
-          if block_given?
-            yield row
-          else
-            parsed << row
-          end
-        end
-        block_given? ? nil : parsed
+        self.bodymethod("lobbyists",0)
+        self.bodymethod("affiliatedOrgs",2)
+        self.bodymethod("foreignEntities",3)
       end
 
       def issues
