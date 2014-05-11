@@ -22,7 +22,6 @@ module Filingbody
   end
 
   def bodymethod(name,n)
-    #attr_reader name
     define_singleton_method("#{name}") do |&block|
       parsed = []
       parsefields(n).each do |row|
