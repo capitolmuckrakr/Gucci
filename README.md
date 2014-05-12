@@ -103,6 +103,10 @@ The following search parameters are available for lobbying filings:
 - `:registrant_country`
 - `:registrant_ppb_country`
 
+To do a search for contribution filings, set the contributions flag:
+
+    :contributions => true
+
 The following search parameters are available for contribution filings:
 
 - `:organization_name`
