@@ -185,8 +185,7 @@ module Gucci
       def parse_issues
         begin
           data = []
-          multi ||= multinodes[0].dup
-          multi.children.each do |m|
+          multi(0).children.each do |m|
             if m.node_name != 'text'
               issuefields = Gucci::Mapper.new
               m.children.map{ |i| issuefields[i.name.to_sym] = nil if i.children.count < 2 }
