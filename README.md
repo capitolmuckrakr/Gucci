@@ -1,6 +1,6 @@
 # Gucci
 
-Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives. The structure and function is heavily indebted to [Fech](https://github.com/NYTimes/Fech) and [Fech-Search](https://github.com/huffpostdata/fech-search), Ruby libraries for parsing and searching FEC campaign filings.
+Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives. The structure and function is heavily indebted to [Fech](https://github.com/NYTimes/Fech) and [fech-search](https://github.com/huffpostdata/fech-search), Ruby libraries for parsing and searching FEC campaign filings.
 
 Gucci::House::Search is a wrapper around the [lobbying](http://disclosures.house.gov/ld/ldsearch.aspx) and [contribution](http://disclosures.house.gov/lc/lcsearch.aspx) search forms on the Clerk's website.
 
