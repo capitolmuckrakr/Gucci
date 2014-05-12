@@ -1,12 +1,12 @@
 # Gucci
 
-Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives.
+Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives. The structure and function is heavily indebted to [Fech](https://github.com/NYTimes/Fech) and [Fech-Search](https://github.com/huffpostdata/fech-search), Ruby libraries for parsing and searching FEC campaign filings.
 
-Gucci::House::Search is a wrapper around the lobbying and contribution search forms on the Clerk's website (http://disclosures.house.gov/ld/ldsearch.aspx and http://disclosures.house.gov/lc/lcsearch.aspx).
+Gucci::House::Search is a wrapper around the [lobbying](http://disclosures.house.gov/ld/ldsearch.aspx) and [contribution](http://disclosures.house.gov/lc/lcsearch.aspx) search forms on the Clerk's website.
 
 Gucci::House::Filing creates an object corresponding to an electronic filing from the Clerk, either a lobbying registration (LD1), a lobbying report (LD2) or a contribution disclosure (LD203).
 
-Gucci is named after a book about lobbying, if you're wondering. It's a perfectly cromulent name.
+Gucci is named after one of the seminal works of lobbying reporting, [Showdown at Gucci Gulch](http://www.amazon.com/Showdown-Gucci-Gulch-Alan-Murray/dp/0394758110).
 
 ## Installation
 
@@ -32,7 +32,7 @@ To install on Ubuntu 12.04 or greater:
 
     require 'gucci'
 
-I. Searching
+#### Searching
 
 A. Lobbying disclosures
 
@@ -72,6 +72,16 @@ For contribution filings:
 Create a `Gucci::House::Filing` object from one of the results and download the filing data:
 
     filing = Gucci::House::Filing.new(results.first.filing_id).download
+    
+#### Parsing
+
+Create a Filing object that corresponds to an electronic filing in XML format from the Clerk, using the unique numeric identifier that the Clerk assigns to each filing. You'll then have to download the file before parsing it:
+
+filing = Gucci::House::Filing.new(300645953)
+
+filing.download
+
+Optionally, you can specify the :download_dir on initialization to set where filings are stored. Otherwise, they'll go into a temp folder on your filesystem.
 
 ### Search parameters
 
