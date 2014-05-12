@@ -77,9 +77,9 @@ Create a `Gucci::House::Filing` object from one of the results and download the 
 
 Create a Filing object that corresponds to an electronic filing in XML format from the Clerk, using the unique numeric identifier that the Clerk assigns to each filing. You'll then have to download the file before parsing it:
 
-filing = Gucci::House::Filing.new(300645953)
+    filing = Gucci::House::Filing.new(300645953)
 
-filing.download
+    filing.download
 
 Optionally, you can specify the :download_dir on initialization to set where filings are stored. Otherwise, they'll go into a temp folder on your filesystem.
 
