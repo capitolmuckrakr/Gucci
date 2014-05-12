@@ -239,8 +239,7 @@ module Gucci
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
       def updates
         @updates = Gucci::Mapper.new
-        multi = multinodes[1].dup
-        multi.children.each do |m|
+        multi(1).children.each do |m|
           if m.node_name != 'text'
             if m.children.count < 2
               @updates[m.name.to_sym] = nil
