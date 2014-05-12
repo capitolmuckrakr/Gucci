@@ -22,7 +22,7 @@ To install on Ubuntu 12.04 or greater:
 
     export DISPLAY=:99 # add this to your environment so that xvfb won't conflict with any other displays
 
-    git clone the repository
+    git clone https://github.com/capitolmuckrakr/Gucci.git
 
     bundle install
 
