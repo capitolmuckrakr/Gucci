@@ -83,6 +83,16 @@ filing.download
 
 Optionally, you can specify the :download_dir on initialization to set where filings are stored. Otherwise, they'll go into a temp folder on your filesystem.
 
+To get summary data for the filing (total lobbying spending, organization or person submitting the filing, other stats about the filing):
+
+    filing.summary
+    => {:imported=>"N", :pages=>"17", :submitURL=>nil, :organizationName=>"LOCKHEED MARTIN CORPORATION", ... }
+
+Returns a named hash of summary attributes available for the filing. Attributes are dynamically assigned based on the type of filing being parsed and on the contents of the filing itself. To see the filing type:
+
+    filing.filing_type
+    => :lobbyingdisclosure2
+
 ### Search parameters
 
 The following search parameters are available for lobbying filings:
