@@ -345,14 +345,10 @@ module Gucci
         self.bodymethod("contributions",1)
       end
 
-      def oldmulti
-        multi ||= multinodes
-      end
-
       def pacs
         @pacs ||= []
         if @pacs_parsed == 0
-          oldmulti[0].children.each do |m|
+          multi(0).children.each do |m|
             if m.name != 'text'
               @pacs.push m.children.children.text.strip if m.children.children.count > 0
             end
