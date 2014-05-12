@@ -30,7 +30,12 @@ module Gucci
                 file << filing.read.ensure_encoding('UTF-8', :external_encoding => Encoding::UTF_8,:invalid_characters => :drop)
               end
             else
-              puts "Filetype is #{filing.content_type} and can't be parsed."
+              begin
+                puts "Filetype is #{filing.content_type} and can't be parsed."
+                return false
+              ensure
+                File.delete(file_path)
+              end
             end
           end
         end
