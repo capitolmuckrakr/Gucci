@@ -6,6 +6,26 @@ Gucci::House::Search is a wrapper around the lobbying and contribution search fo
 
 Gucci::House::Filing creates an object corresponding to an electronic filing from the Clerk, either a lobbying registration (LD1), a lobbying report (LD2) or a contribution disclosure (LD203).
 
+Gucci is named after a book about lobbying, if you're wondering. It's a perfectly cromulent name.
+
+## Installation
+
+Searching with Gucci uses Selenium and Firefox for headless browsing and is limited to platforms that support Xvfb, including Ubuntu and OSX using Macports only, not Homebrew. Changing that is on the list of tasks for the project.
+
+Otherwise, the software is functional, though still in development.
+
+Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. If installing on Ubuntu server, Gucci needs Firefox to run. Gucci has received limited testing on OS 10.9 and has not been tested on Windows.
+
+To install on Ubuntu 12.04 or greater:
+
+    sudo apt-get install xvfb
+
+    export DISPLAY=:99 # add this to your environment so that xvfb won't conflict with any other displays
+
+    git clone the repository
+
+    bundle install
+
 ## Usage
 
 ### Examples
@@ -95,29 +115,8 @@ The following search parameters are available for contribution filings:
 - `:contact_name`
 - `:senate_id`
 
-Up to five parameters may be used and the search functionality will only return up to 2,000 results.
+Up to five parameters may be used and the search functionality will return up to 2,000 results.
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'gucci'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install gucci
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
 
 ## Author
 
