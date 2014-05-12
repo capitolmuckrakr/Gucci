@@ -225,15 +225,15 @@ module Gucci
       end
 
       def issues(&block)
-        parsed_issues = []
+        parsed = []
         parse_issues.each do |row|
           if block_given?
             yield row
           else
-            parsed_issues << row
+            parsed << row
           end
         end
-        block_given? ? nil : parsed_issues
+        block_given? ? nil : parsed
       end
 
 #grab our fields for updates(change of address,inactive lobbyists,inactive issues,etc), remove blank text nodes, assign keys
