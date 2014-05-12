@@ -22,10 +22,16 @@ module Gucci
 
       def download
         File.open(file_path, 'w') do |file|
-          begin
-            file << open(filing_url).read
-          rescue
-            file << open(filing_url).read.ensure_encoding('UTF-8', :external_encoding => Encoding::UTF_8,:invalid_characters => :drop)
+          open(filing_url) do |filing|
+            if filing.content_type == "text/xml"
+              begin
+                file << filing.read
+              rescue
+                file << filing.read.ensure_encoding('UTF-8', :external_encoding => Encoding::UTF_8,:invalid_characters => :drop)
+              end
+            else
+              puts "Filetype is #{filing.content_type} and can't be parsed."
+            end
           end
         end
         self
