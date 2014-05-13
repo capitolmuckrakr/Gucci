@@ -151,11 +151,14 @@ The following search parameters are available for contribution filings:
 
 Up to five parameters may be used and the search functionality will return up to 2,000 results.
 
-
 ## Author
 
 - Alexander Cohen, alex@capitolmuckraker.com
 
-## Copyright
+## Contributing
 
-Copyright © 2014 The Center for Public Integrity. See LICENSE for details.
+1. Fork it ( http://github.com/capitolmuckrakr/Gucci/fork )
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+5. Create new Pull Request
