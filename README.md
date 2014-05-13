@@ -93,7 +93,7 @@ Returns a named hash of summary attributes available for the filing. Attributes 
     filing.filing_type
     => :lobbyingdisclosure2
 
-Other attributes, accessible using .body, are stored as arrays of named hashes or as arrays, such as lobbyists and contributions (hashes), or issue codes and agencies(arrays).
+Other attributes, accessible using .body, are stored as arrays of named hashes, as arrays, or as strings, such as lobbyists and contributions (hashes), pacs and agencies(arrays) and specific issues(string).
 
     filing.body.issues.first
     => {:issueAreaCode=>"CAW", :specific_issues=>"CAC meetings about state work on methane
@@ -102,10 +102,8 @@ Other attributes, accessible using .body, are stored as arrays of named hashes o
     "U.S. HOUSE OF REPRESENTATIVES", "Environmental Protection Agency (EPA)"],
     :foreign_entity_issues=>nil, :lobbyists=>[{:lobbyistFirstName=>"Lana",
     :lobbyistLastName=>"Lobbyist", :lobbyistSuffix=>nil, :coveredPosition=>nil, :lobbyistNew=>"N"},
-    {:lobbyistFirstName=>"Robert", :lobbyistLastName=>"Revolver", :lobbyistSuffix=>nil,
+    {:lobbyistFirstName=>"Bob", :lobbyistLastName=>"Loblaw", :lobbyistSuffix=>nil,
     :coveredPosition=>nil, :lobbyistNew=>"N"}]}
-
-
 
 ### Search parameters
 
