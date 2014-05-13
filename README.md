@@ -92,6 +92,11 @@ Returns a named hash of summary attributes available for the filing. Attributes 
 
     filing.filing_type
     => :lobbyingdisclosure2
+    
+Attributes can be called as methods instead of using symbols as keys:
+
+    filing.summary.clientName
+    => "Marinette Marine Corporation"
 
 Other attributes, accessible using .body, are stored as arrays of named hashes, as arrays, or as strings.
 
@@ -102,6 +107,11 @@ Other attributes, accessible using .body, are stored as arrays of named hashes, 
     [{:lobbyistFirstName=>"Lana", :lobbyistLastName=>"Lobbyist", :lobbyistSuffix=>nil,
     :coveredPosition=>nil, :lobbyistNew=>"N"}, {:lobbyistFirstName=>"Bob", :lobbyistLastName=>"Loblaw",
     :lobbyistSuffix=>nil, :coveredPosition=>nil, :lobbyistNew=>"N"}]}
+    
+Again, body attributes and their descenadants are accessible as method calls:
+
+    filing.body.issues.first.federal_agencies
+    => ["U.S. HOUSE OF REPRESENTATIVES", "U.S. SENATE"]
 
 ### Search parameters
 
@@ -149,7 +159,14 @@ The following search parameters are available for contribution filings:
 - `:contact_name`
 - `:senate_id`
 
-Up to five parameters may be used and the search functionality will return up to 2,000 results.
+Up to five parameters may be used and the search functionality will return up to 2,000 results. An error is returned if too many parameters are passed or if a parameter is set to an invalid value. Any invalid parameters are ignored.
+
+    search = Gucci::House::Search.new(:filing_year => 2020)
+    ArgumentError: 1 error(s)
+    2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014
+
+### Filing attributes
+
 
 ## Author
 
