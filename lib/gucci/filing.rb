@@ -17,7 +17,7 @@ module Gucci
       def initialize(filing_id,opts={})
         @filing_id = filing_id
         @opts = opts
-        @download_dir = @opts[:download_dir] || Dir.tmpdir
+        @download_dir = opts.delete(:download_dir) || Dir.tmpdir
       end
 
       def download
