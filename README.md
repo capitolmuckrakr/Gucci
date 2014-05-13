@@ -108,7 +108,7 @@ Other attributes, accessible using .body, are stored as arrays of named hashes, 
     :coveredPosition=>nil, :lobbyistNew=>"N"}, {:lobbyistFirstName=>"Bob", :lobbyistLastName=>"Loblaw",
     :lobbyistSuffix=>nil, :coveredPosition=>nil, :lobbyistNew=>"N"}]}
     
-Again, body attributes and their descenadants are accessible as method calls:
+Again, body attributes and their descendants are accessible as method calls:
 
     filing.body.issues.first.federal_agencies
     => ["U.S. HOUSE OF REPRESENTATIVES", "U.S. SENATE"]
