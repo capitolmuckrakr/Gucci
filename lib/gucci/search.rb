@@ -1,13 +1,13 @@
 require 'watir-webdriver'
 require 'headless'
 require 'fileutils'
-require 'date' #do we need this in ruby >=2.0 ?
+require 'date'
 
 module Gucci
   module House
     class Search
 
-      attr_accessor :download_dir, :search_params
+      attr_accessor :download_dir, :search_params, :status
 
       def initialize(opts={})
         @download_dir = opts.delete(:download_dir) || Dir.tmpdir
@@ -54,6 +54,8 @@ module Gucci
           sleep 1
         end
         @browser.button(:name => 'cmdSearch').click
+        @status = @browser.body.text.split("\n")[206]
+        raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
         @browser.radio(:id => 'RadioButtonList1_1' ).set # for CSV download
         @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
       end
