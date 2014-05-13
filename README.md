@@ -96,8 +96,8 @@ Returns a named hash of summary attributes available for the filing. Attributes 
 Other attributes, accessible using .body, are stored as arrays of named hashes, as arrays, or as strings.
 
     filing.body.issues.first
-    => {:issueAreaCode=>"CAW", :specific_issues=>"CAC meetings about state work on methane
-    and power plant rules,  Senate DPC meeting, and internal legislative meetings.", :federal_agencies=>["U.S. SENATE",
+    => {:issueAreaCode=>"CAW", :specific_issues=>"CAC meetings about state work on methane and power plant
+    rules,  Senate DPC meeting, and internal legislative meetings.", :federal_agencies=>["U.S. SENATE",
     "U.S. HOUSE OF REPRESENTATIVES", "Environmental Protection Agency (EPA)"],
     :foreign_entity_issues=>nil, :lobbyists=>[{:lobbyistFirstName=>"Lana",
     :lobbyistLastName=>"Lobbyist", :lobbyistSuffix=>nil, :coveredPosition=>nil, :lobbyistNew=>"N"},
