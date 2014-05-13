@@ -72,7 +72,7 @@ For contribution filings:
 Create a `Gucci::House::Filing` object from one of the results and download the filing data:
 
     filing = Gucci::House::Filing.new(results.first.filing_id).download
-    
+
 #### Parsing
 
 Create a Filing object that corresponds to an electronic filing in XML format from the Clerk, using the unique numeric identifier that the Clerk assigns to each filing. You'll then have to download the file before parsing it:
@@ -83,7 +83,7 @@ Create a Filing object that corresponds to an electronic filing in XML format fr
 
 Optionally, you can specify the :download_dir on initialization to set where filings are stored. Otherwise, they'll go into a temp folder on your filesystem.
 
-To get summary data for the filing (total lobbying spending, organization or person submitting the filing, other stats about the filing):
+To get summary attributes for the filing (total lobbying spending, organization or person submitting the filing, other stats about the filing):
 
     filing.summary
     => {:imported=>"N", :pages=>"17", :submitURL=>nil, :organizationName=>"LOCKHEED MARTIN CORPORATION", ... }
@@ -92,6 +92,10 @@ Returns a named hash of summary attributes available for the filing. Attributes 
 
     filing.filing_type
     => :lobbyingdisclosure2
+
+Other attributes, accessible using .body, are stored as arrays of named hashes or as arrays, such as lobbyists and contributions (hashes), or issue codes, agencies and inactive lobbyists (arrays).
+
+
 
 ### Search parameters
 
