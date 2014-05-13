@@ -181,8 +181,7 @@ module Gucci
         @issues.compact
       end
 
-      private :parsefields
-
+      private :parsefields,:file_path,:download_dir,:download_dir=,:xml,:xml=,:filing_id,:body,:filing_type,:file_name,:download,:summary,:filing_url
       protected :bodymethod
 
     end
@@ -343,7 +342,7 @@ module Gucci
         @updates
       end
 
-      private :parse_issues
+      private :parse_issues,:download_dir,:download_dir=,:xml,:xml=,:filing_id,:body,:download,:summary,:filing_url,:filing_type,:file_path,:file_name
 
     end
 
@@ -375,7 +374,7 @@ module Gucci
         @pacs
       end
 
-      private :parsefields
+      private :parsefields,:file_path,:download_dir,:download_dir=,:xml,:xml=,:filing_id,:body,:filing_type,:file_name,:download,:summary,:filing_url
       protected :bodymethod
 
     end
