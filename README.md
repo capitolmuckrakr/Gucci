@@ -20,7 +20,7 @@ To install on Ubuntu 12.04 or greater:
 
     sudo apt-get install xvfb
 
-    export DISPLAY=:99 # add this to your environment so that xvfb won't conflict with any other displays
+    export DISPLAY=:99 # add this to your environment so xvfb doesn't conflict with other displays
     
     gem install gucci
 
