@@ -12,7 +12,7 @@ module Gucci
 
       attr_accessor :download_dir, :xml
 
-      attr_reader :filing_id, :body
+      attr_reader :filing_id, :body, :parsingproblems
 
       def initialize(filing_id,opts={})
         @filing_id = filing_id
@@ -147,6 +147,8 @@ module Gucci
         "#{filing_id}.xml"
       end
 
+      private :parse,:multinodes,:multi,:filing_url_base,:disclosure_url_base,:contribution_url_base,:parse_problem
+
     end
 
     class Registration < Filing
@@ -178,6 +180,10 @@ module Gucci
         end
         @issues.compact
       end
+
+      private :parsefields
+
+      protected :bodymethod
 
     end
 
@@ -337,6 +343,8 @@ module Gucci
         @updates
       end
 
+      private :parse_issues
+
     end
 
     class Contribution < Filing
@@ -366,6 +374,10 @@ module Gucci
         end
         @pacs
       end
+
+      private :parsefields
+      protected :bodymethod
+
     end
 
   end
