@@ -97,8 +97,7 @@ Other attributes, accessible using .body, are stored as arrays of named hashes, 
 
     filing.body.issues.first
     => {:issueAreaCode=>"CAW", :specific_issues=>"CAC meetings about state work on methane
-    and power plant rules,  Senate DPC meeting, and internal legislative meetings.\n\nNote:
-    Registrants lobbied one or more of the agencies noted.", :federal_agencies=>["U.S. SENATE",
+    and power plant rules,  Senate DPC meeting, and internal legislative meetings.", :federal_agencies=>["U.S. SENATE",
     "U.S. HOUSE OF REPRESENTATIVES", "Environmental Protection Agency (EPA)"],
     :foreign_entity_issues=>nil, :lobbyists=>[{:lobbyistFirstName=>"Lana",
     :lobbyistLastName=>"Lobbyist", :lobbyistSuffix=>nil, :coveredPosition=>nil, :lobbyistNew=>"N"},
