@@ -20,7 +20,7 @@ To install on Ubuntu 12.04 or greater:
 
     export DISPLAY=:99 # add this to your environment so xvfb doesn't conflict with other displays
     
-    gem install gucci
+    #gem install gucci
 
 ## Usage
 
