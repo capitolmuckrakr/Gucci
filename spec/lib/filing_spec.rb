@@ -11,9 +11,43 @@ describe Gucci do
     @contribution.stubs(:file_path).returns(File.join(File.dirname(__FILE__), 'data', '700704476.xml'))
   end
 
-  it "should return a report filing object" do
-    @filing = Gucci::House::Filing.new(300630565,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
-    @filing.should_not be_nil
+  describe "creating filing" do
+
+    it "should raise ArgumentError if no parameters are given" do
+      expect { Gucci::House::Filing.new }.to raise_error(ArgumentError)
+    end
+
+    it "should return a filing object" do
+      @filing = Gucci::House::Filing.new(300630565,:download_dir=>File.join(File.dirname(__FILE__), 'data'))
+      @filing.should_not be_nil
+    end
+
+  end
+
+  describe "#registration_summary" do
+
+    it "should return the registration mapped summary row" do
+      sum = @registration.summary
+      sum.should be_a_kind_of(Hash)
+      sum.organizationName.should == "PolicyWorks"
+    end
+  end
+
+  describe "#registration_body.lobbyists" do
+
+    it "should return an array" do
+      lob = @registration.body.lobbyists
+      lob.should be_a_kind_of(Array)
+    end
+  end
+
+  describe "#registration_body.lobbyist" do
+
+    it "should return a mapped issue row" do
+      lob1 = @registration.body.lobbyists.first
+      lob1.should be_a_kind_of(Hash)
+      lob1.lobbyistFirstName.should == "Robert"
+    end
   end
 
   describe "#report_summary" do
@@ -41,7 +75,7 @@ describe Gucci do
       iss1.issueAreaCode.should == "CAW"
     end
   end
-  
+
   describe "#report_lobbyists" do
 
     it "should return an array" do
@@ -49,7 +83,7 @@ describe Gucci do
       lob.should be_a_kind_of(Array)
     end
   end
-  
+
   describe "#report_lobbyist" do
 
     it "should return a mapped lobbyist row" do
@@ -69,7 +103,7 @@ describe Gucci do
       ups.clientAddress.should == nil
     end
   end
-  
+
   describe "#report_inactive_lobbyists" do
 
     it "should return an array" do
@@ -78,7 +112,7 @@ describe Gucci do
       inact_lobs.count.should == 2
     end
   end
-  
+
   describe "#report_inactive_lobbyist" do
 
     it "should return a mapped inactive lobbyist row" do
@@ -88,6 +122,6 @@ describe Gucci do
       inact_lob1.should be_a_kind_of(Hash)
       inact_lob1.lastName.should == "Carey"
     end
-  end  
+  end
 
 end
