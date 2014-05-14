@@ -24,6 +24,32 @@ describe Gucci do
 
   end
 
+  describe "#contribution_summary" do
+
+    it "should return the contribution mapped summary row" do
+      sum = @contribution.summary
+      sum.should be_a_kind_of(Hash)
+      sum.organizationName.should == "Tesoro Companies"
+    end
+  end
+
+  describe "#contribution.body.contributions" do
+
+    it "should return an array" do
+      contrib = @contribution.body.contributions
+      contrib.should be_a_kind_of(Array)
+    end
+  end
+
+  describe "#contribution.body.contribution" do
+
+    it "should return a mapped contribution row" do
+      contrib1 = @contribution.body.contributions[1]
+      contrib1.should be_a_kind_of(Hash)
+      contrib1.type.should == "FECA"
+    end
+  end
+
   describe "#registration_summary" do
 
     it "should return the registration mapped summary row" do
