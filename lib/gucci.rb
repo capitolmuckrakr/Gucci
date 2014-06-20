@@ -1,7 +1,7 @@
 require "gucci/version"
-require "gucci/filing"
+require "gucci/house/filing"
 require "gucci/senate/filing"
-require "gucci/search"
+require "gucci/house/search"
 require "gucci/mapper"
 require 'tmpdir'
 
