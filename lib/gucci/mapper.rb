@@ -7,7 +7,7 @@ String.class_eval do
       if c.count > 3
         Time.new(c[2],c[0],c[1],c[3],c[4],c[5],"-04:00")
       else
-        Time.new(c[2],c[0],c[1],0,0,0,"+04:00") if c.count < 4
+        Time.new(c[2],c[0],c[1],0,0,0,"-04:00") if c.count < 4
       end
     rescue
       self
