@@ -2,7 +2,7 @@ String.class_eval do
   def to_strtime
     begin
       c = self.gsub(/(\/| )/,':').split(':')
-      c[3] = c[3].to_i + 12 if c[-1] == "PM" && c.count >3
+      c[3] = c[3].to_i + 12 if c[-1] == "PM" && c.count >3 && c[3].to_i < 12
       c.pop if c.count > 3
       if c.count > 3
         Time.new(c[2],c[0],c[1],c[3],c[4],c[5],"-04:00")
