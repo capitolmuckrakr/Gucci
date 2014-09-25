@@ -17,6 +17,7 @@ module Gucci
         @browser = browser
         @search_params = validate_params(make_params(opts))
         search(@search_params)
+        @browser.close
       end
 
       def browser
@@ -58,12 +59,13 @@ module Gucci
         raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
         @browser.radio(:id => 'RadioButtonList1_1' ).set # for CSV download
         @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
+        @browser.close
       end
 
       def parse_results()
         filings = []
         results_file = @search_type == :contributions ? 'Contributions.CSV' : 'Disclosures.CSV'
-        results_delimiter = @search_type == :contributions ? "," : "\t" 
+        results_delimiter = @search_type == :contributions ? "," : "\t"
         open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
         filings.shift
         filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest?
@@ -86,11 +88,11 @@ module Gucci
         end
         block_given? ? nil : parsed_results
       end
-      
+
       def make_params(search_params)
         @search_type == :contributions ? make_contribution_params(search_params) : make_disclosure_params(search_params)
       end
-      
+
       def make_disclosure_params(search_params)
         {
         'Registrant Name' => search_params[:registrant_name] || '', #validate?
@@ -120,7 +122,7 @@ module Gucci
         'Registrant PPB Country' => search_params[:registrant_ppb_country] || ''
         }
       end
-      
+
       def make_contribution_params(search_params)
         {
         'Organization Name' => search_params[:organization_name] || '',
@@ -131,10 +133,10 @@ module Gucci
         'Filing Year' => search_params[:filing_year] || '',
         'Lobbyist Name' => search_params[:lobbyist_name] || '',
         'Contact Name' => search_params[:contact_name] || '',
-        'Senate ID' => search_params[:senate_id] || ''    
+        'Senate ID' => search_params[:senate_id] || ''
         }
       end
-      
+
       def valid_params
         @search_type == :contributions ? VALID_CONTRIBUTION_PARAMS : VALID_DISCLOSURE_PARAMS
       end
@@ -486,12 +488,12 @@ module Gucci
         'Registrant Country' => COUNTRIES.values,
         'Registrant PPB Country' => COUNTRIES.values
       }
-      
+
       VALID_CONTRIBUTION_PARAMS = {
         'Filing Period' => ["Mid-Year", "Year-End"],
         'Filing Type' => REPORT_TYPES.values.grep(/year/i).reject{|v| v=~/termination/i},
         'Filing Year' => (2008..Date.today.year).map{ |y| y }
-      }  
+      }
 
   end
 end
