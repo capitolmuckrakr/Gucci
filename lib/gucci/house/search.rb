@@ -55,11 +55,16 @@ module Gucci
           sleep 1
         end
         @browser.button(:name => 'cmdSearch').click
-        @status = @browser.body.text.scan(/\d+ of \d+ Total \d+/)[0]
-        raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
-        @browser.radio(:id => 'RadioButtonList1_1' ).set # for CSV download
-        @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
-        @browser.close
+        begin
+          @status = @browser.body.text.scan(/\d+ of \d+ Total \d+/)[0]
+          raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
+          @browser.radio(:id => 'RadioButtonList1_1' ).set # for CSV download
+          @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
+          @browser.close
+        rescue
+          @search_type == :contributions ? FileUtils.touch("#{@download_dir}/Contributions.CSV") : FileUtils.touch("#{@download_dir}/Disclosures.CSV")
+          return @browser
+        end
       end
 
       def parse_results()
