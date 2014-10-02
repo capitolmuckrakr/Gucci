@@ -45,16 +45,20 @@ module Gucci
           sleep 1
         end
         @browser.button(:name => 'cmdSearch').click
-        selected_params.keys.sort.each do |param_order|
-          param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
-          if valid_params.keys.include?(selected_params[param_order])
-            @browser.select_list(:id => "#{param_id}").select "#{params[selected_params[param_order]]}"
-          else
-            @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
+        begin
+          selected_params.keys.sort.each do |param_order|
+            param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
+            if valid_params.keys.include?(selected_params[param_order])
+              @browser.select_list(:id => "#{param_id}").select "#{params[selected_params[param_order]]}"
+            else
+              @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
+            end
+            sleep 1
           end
-          sleep 1
+          @browser.button(:name => 'cmdSearch').click
+        rescue
         end
-        @browser.button(:name => 'cmdSearch').click
+        raise ArgumentError, "There was an error with the Lobby Disclosure Search System. Try your search again or contact the Legislative Resource Center." if @browser.text.scan(/There was an error with the Lobby Disclosure Search System/)[0] == "There was an error with the Lobby Disclosure Search System"
         begin
           @status = @browser.body.text.scan(/\d+ of \d+ Total \d+/)[0]
           raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
