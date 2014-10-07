@@ -31,7 +31,7 @@ module Gucci
       end
 
       def filing_type
-        parse.children[1].children[0].children[1].text.to_sym || nil
+        parse.children[1].children[1].children[3].text.to_sym || nil
       end
 
       def file_path
