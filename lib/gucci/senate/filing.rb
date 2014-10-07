@@ -12,11 +12,11 @@ module Gucci
       attr_accessor :download_dir, :html
 
       attr_reader :filing_id, :filing_url_base, :filing_url,:body, :parsingproblems
-      
+
       REGISTRATION_URL_BASE = 'http://soprweb.senate.gov/index.cfm?event=getFilingDetails&filingTypeID=1&filingID='
-      
+
       DISCLOSURE_URL_BASE = 'http://soprweb.senate.gov/index.cfm?event=getFilingDetails&filingTypeID=3&filingID='
-      
+
       CONTRIBUTION_URL_BASE = 'http://soprweb.senate.gov/index.cfm?event=getFilingDetails&filingTypeID=87&filingID='
 
       def initialize(filing_id='',opts={})
@@ -25,7 +25,7 @@ module Gucci
         @opts = opts
         @download_dir = @opts[:download_dir] || Dir.tmpdir
       end
-      
+
       def filing_url
         @filing_url_base[0] + @filing_id
       end
@@ -40,7 +40,7 @@ module Gucci
 
       def file_name
         "#{filing_id}.html"
-      end      
+      end
 
       def file_download
         File.open(file_path, 'w') do |file|
@@ -54,7 +54,7 @@ module Gucci
         end
         self
       end
-        
+
       def parse
         begin
           @html ||= Nokogiri::HTML(File.open(file_path,"r"))
@@ -63,9 +63,9 @@ module Gucci
           puts e.backtrace.inspect
         end
       end
-      
+
       def check_download
-        if file_download.parse.children[1].children.count == 2
+        if file_download.parse.children.children.count == 5
           return true
         else
           @filing_url_base.rotate!
@@ -73,7 +73,7 @@ module Gucci
           return false
         end
       end
-      
+
       def download
         begin
           until check_download == true
@@ -150,7 +150,7 @@ module Gucci
 
 
     end
-    
+
   end
 
 end
