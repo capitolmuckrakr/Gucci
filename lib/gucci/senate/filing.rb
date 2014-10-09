@@ -93,6 +93,10 @@ module Gucci
         parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
       end
 
+      def data
+        parse.children[1].children[3]
+      end
+
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
       def summary
         summary_hash ||= Gucci::Mapper.new
