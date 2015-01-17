@@ -12,6 +12,7 @@ module Gucci
       def initialize(opts={})
         @download_dir = opts.delete(:download_dir) || Dir.tmpdir
         @search_type = opts[:contributions] ? :contributions : :disclosures
+        @search_by = opts[:contribution_search] ? :contribution_search : :contribution_filing_search if @search_type == :contributions
         opts.delete(:contributions) if opts[:contributions]
         @search_type == :contributions ? FileUtils.rm_f(Dir.glob("#{@download_dir}/Contributions*.CSV")) : FileUtils.rm_f(Dir.glob("#{@download_dir}/Disclosures*.CSV"))
         @browser = browser
