@@ -107,7 +107,7 @@ module Gucci
         {
         'Registrant Name' => search_params[:registrant_name] || '', #validate?
         'Client Name' => search_params[:client_name] || '', #validate?
-        'House ID' => search_params[:house_id] || '', #validate?
+        'House ID' => search_params[:registrant_id] || '', #validate?
         'Filing Period' => search_params[:filing_period] || '',
         'Filing Type' => search_params[:filing_type] || '',
         'Filing Year' => search_params[:filing_year] || '',
