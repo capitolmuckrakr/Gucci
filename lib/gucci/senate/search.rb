@@ -7,7 +7,7 @@ module Gucci
   module Senate
     class Search
 
-      attr_accessor :download_dir, :search_params, :status
+      attr_accessor :download_dir, :search_params, :status, :pages, :filings
 
       def initialize(opts={})
         @search_type = opts[:contributions] ? :contributions : :disclosures
@@ -20,9 +20,9 @@ module Gucci
 
       def browser
         headless = Headless.new(
-          display:         101,
-          destroy_at_exit: false,
-          reuse:           true
+          display:         $$#,
+          #destroy_at_exit: false,
+          #reuse:           true
         )
         headless.start
         profile = Selenium::WebDriver::Firefox::Profile.new
@@ -35,22 +35,19 @@ module Gucci
       end
 
       def search(params)
-        param_count = 0
-        selected_params = {}
         params.each_key do |param|
-          param_count += 1
-          selected_params[param_count] = param
           @browser.checkbox(:value=>"#{param}").set
           sleep 1
         end
         @browser.button(:value=>"Submit").click
         begin
-          selected_params.keys.sort.each do |param_order|
-            param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
-            if valid_params.keys.include?(selected_params[param_order])
-              @browser.select_list(:id => "#{param_id}").select "#{params[selected_params[param_order]]}"
+          params.each_pair do |param_key,param_value|
+        #    param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
+            if valid_params.keys.include?(param_key)
+              @browser.select_list(:id=>"#{param_key}").option(:text=>"#{param_value}").select
             else
-              @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
+              puts "invalid selection"
+        #      @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
             end
             sleep 1
           end
@@ -59,13 +56,13 @@ module Gucci
         end
         raise ArgumentError, "There was an error with the Senate Lobby Disclosure Search System. Try your search again." if @browser.text.scan(/"An Error Occurred"/)[0] == "An Error Occurred"
         begin
-          @status = @browser.div(:id=>"searchResults_info").text.scan(/\d+ to \d+ of \d+ entries/)[0]
+          @status = @browser.div(:id=>"searchResults_info").text.scan(/\d+ to \d+ of \d+,?\d+? entries/)[0]
           raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 3000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 3000
-          @entries = @status.scan(/\d+/)[-1].to_i
+          @entries = @status.scan(/of (.*?) entries/).flatten[0].gsub(',','').to_i
           @pages = @entries/100
-          @pages +=1 if @entries%100
-          #parse_results() #do we need to call before closing @browser? probably.
-          @browser.close
+          @pages +=1 if @entries%100 > 0
+          @filings = parse_results
+          return @browser
         rescue
           return @browser
         end
@@ -74,10 +71,17 @@ module Gucci
       def parse_results()
         filings = []
         while @pages >0
+          puts "Processing page #{@pages}"
+          rownum=0
           @browser.trs(:class=>/(odd|even)/).each do |row|
-            filing_id = row.onclick.scan(/window\.open\(\'index\.cfm\?event\=getFilingDetails\&filingID\=(.*?)\&.*?/).flatten[0]
-            newrow = [filing_id,row.tds.map{|t|t.text } ].flatten
-            filings.push(newrow)
+            rownum+=1
+            puts "Processing row #{rownum} from page #{@pages}"
+            newrow = []
+            row.tds.each{|t|newrow.push(t.text)}
+            filing_id = ''
+            filing_id+=row.html
+            newrow.unshift(filing_id.scan(/filingID\=(.*?)\&/)[0])
+            filings.push(newrow.flatten)
           end
           @pages-=1
           @browser.span(:id=>"searchResults_next").click if @pages > 0
@@ -86,11 +90,13 @@ module Gucci
       end
 
       def results(&block)
+        parsed_results = []
         disclosure_keys = [:filing_id, :registrant_name, :client_name, :filing_type, :amount_reported, :date_posted, :filing_year]
         contribution_keys = [:filing_id,:organization_name, :lobbyist_name,:filing_type, :filing_year, :date_posted ]
         keys = @search_type == :contributions ? contribution_keys : disclosure_keys
-        parse_results.each do |row| #should we call the function directly or call a variable holding the returned filings?
+        @filings.each do |row| #should we call parse_results function directly or call a variable holding the returned filings?
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
+          #puts search_result
           if block_given?
             yield search_result
           else
@@ -382,7 +388,7 @@ module Gucci
         "YA" => "Year-End Amendment Report",
         "YT" => "Year-End Termination Report",
         "Y@" => "Year-End Termination Amendment Report",
-        "RR" => "Registration",
+        "RR" => "REGISTRATION",
         "RA" => "Registration Amendment",
         "Q1" => "1st Quarter Report",
         "1A" => "1st Quarter Amendment Report",
@@ -487,19 +493,19 @@ module Gucci
 
       STATES = ["AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "GU", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY"]
       VALID_DISCLOSURE_PARAMS = {
-        'Filing Period' => ["Mid-Year (Jan 1 - Jun 30)", "Year-End (July 1 - Dec 31)", "1st Quarter (Jan 1 - Mar 31)", "2nd Quarter (Apr 1 - June 30)", "3rd Quarter (July 1 - Sep 30)", "4th Quarter (Oct 1 - Dec 31)"],
-        'Filing Type' => REPORT_TYPES.values,
-        'Filing Year' => (1999..Date.today.year).map{ |y| y },
-        'Issue Code' => ISSUES.values,
-        'Affiliated Country' => COUNTRIES.values,
-        'Client Country' => COUNTRIES.values,
-        'Client PPB Country' => COUNTRIES.values,
-        'Client State' => STATES,
-        'Foreign Entiry PPB Country' => COUNTRIES.values, #typo in field name on House form
-        'Foreign Entity Country' => COUNTRIES.values,
-        'Lobbyist Covered' => ["True","False"],
-        'Registrant Country' => COUNTRIES.values,
-        'Registrant PPB Country' => COUNTRIES.values
+        'filingPeriod' => ["Mid-Year (Jan 1 - Jun 30)", "Year-End (July 1 - Dec 31)", "1st Quarter (Jan 1 - Mar 31)", "2nd Quarter (Apr 1 - June 30)", "3rd Quarter (July 1 - Sep 30)", "4th Quarter (Oct 1 - Dec 31)"],
+        'reportType' => REPORT_TYPES.values,
+        'filingYear' => (1999..Date.today.year).map{ |y| y },
+        'issueCode' => ISSUES.values,
+        'affiliatedOrganizationCountry' => COUNTRIES.values,
+        'clientCountry' => COUNTRIES.values,
+        'clientPPBCountry' => COUNTRIES.values,
+        'clientState' => STATES,
+        'foreignEntityPPBCountry' => COUNTRIES.values,
+        'foreignEntityCountry' => COUNTRIES.values,
+        'lobbyistCoveredPositionDescription' => ["True","False"],
+        'registrantCountry' => COUNTRIES.values,
+        'registrantPPBCountry' => COUNTRIES.values
       }
 
       VALID_CONTRIBUTION_PARAMS = {
