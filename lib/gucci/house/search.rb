@@ -22,7 +22,11 @@ module Gucci
       end
 
       def browser
-        headless = Headless.new
+        headless = Headless.new(
+          display:         $$#,
+          #destroy_at_exit: false,
+          #reuse:           true
+        )
         headless.start
         profile = Selenium::WebDriver::Firefox::Profile.new
         profile['browser.download.folderList'] = 2
