@@ -17,8 +17,6 @@ Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ru
 To install on Ubuntu 12.04 or greater:
 
     sudo apt-get install xvfb
-
-    export DISPLAY=:99 # add this to your environment so xvfb doesn't conflict with other displays
     
     #gem install gucci
 
