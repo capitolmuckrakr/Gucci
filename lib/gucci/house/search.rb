@@ -94,6 +94,7 @@ module Gucci
         parse_results.each do |row|
           row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contributions
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
+          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists) 
           if block_given?
             yield search_result
           else
