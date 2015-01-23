@@ -12,6 +12,8 @@ module Gucci
       def initialize(opts={})
         @search_type = opts[:contributions] ? :contributions : :disclosures
         opts.delete(:contributions) if opts[:contributions]
+        @verbose = opts[:verbose] ? true : false
+        opts.delete(:verbose) if opts[:verbose]
         @browser = browser
         @search_params = validate_params(make_params(opts))
         search(@search_params)
@@ -71,11 +73,11 @@ module Gucci
       def parse_results()
         filings = []
         while @pages >0
-          puts "Processing page #{@pages}"
-          rownum=0
+          puts "Processing page #{@pages}" if @verbose
+          rownum = 0
           @browser.trs(:class=>/(odd|even)/).each do |row|
-            rownum+=1
-            puts "Processing row #{rownum} from page #{@pages}"
+            rownum+=1 if @verbose
+            puts "Processing row #{rownum} from page #{@pages}" if @verbose
             newrow = []
             row.tds.each{|t|newrow.push(t.text)}
             filing_id = ''
