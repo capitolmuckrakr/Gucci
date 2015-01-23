@@ -24,6 +24,7 @@ module Gucci
         @filing_id = filing_id
         @opts = opts
         @download_dir = @opts[:download_dir] || Dir.tmpdir
+        @opts.delete(:download_dir) if @opts[:download_dir]
       end
 
       def filing_url
