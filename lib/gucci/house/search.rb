@@ -95,8 +95,12 @@ module Gucci
       def parse_results()
         filings = []
         results_file = @search_type == :contributions ? 'Contributions.CSV' : 'Disclosures.CSV'
-        results_delimiter = @search_type == :contributions ? "," : "\t"
-        open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
+        results_delimiter = @search_type.to_s =~ /contribution/ ? "," : "\t"
+        if @search_type.to_s =~ /filings/ 
+          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
+        else
+          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)}
+        end
         filings.shift
         filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest?
         return filings
@@ -104,11 +108,19 @@ module Gucci
 
       def results(&block)
         disclosure_keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
-        contribution_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
-        keys = @search_type == :contributions ? contribution_keys : disclosure_keys
+        contribution_keys = [:filing_id,:house_id,:organization_name,:lobbyist_name,:payee_name,:recipient_name,:contributor_name,:amount ]
+        contribution_filing_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
+        keys = []
+        if @search_type == :contributions
+          keys = contribution_keys
+        elsif @search_type ==  :contribution_filings
+          keys = contribution_filing_keys
+        else
+          keys = disclosure_keys
+        end
         parsed_results = []
         parse_results.each do |row|
-          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contributions
+          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
           search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists) 
           if block_given?
