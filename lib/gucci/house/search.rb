@@ -94,7 +94,7 @@ module Gucci
 
       def parse_results()
         filings = []
-        results_file = @search_type == :contributions ? 'Contributions.CSV' : 'Disclosures.CSV'
+        results_file = @search_type.to_s =~ /contribution/ ? 'Contributions.CSV' : 'Disclosures.CSV'
         results_delimiter = @search_type.to_s =~ /contribution/ ? "," : "\t"
         if @search_type.to_s =~ /filings/ 
           open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
