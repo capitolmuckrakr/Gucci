@@ -28,13 +28,13 @@ To install on Ubuntu 12.04 or greater:
 
 #### Searching
 
-A. Lobbying disclosures
+A. Lobbying filing disclosures
 
 Perform a search for form LD1 or LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
 
     search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013)
 
-B. Contribution disclosures
+B. Contribution filing disclosures
 
 Perform a search for form LD203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
 
@@ -160,6 +160,10 @@ Up to five parameters may be used and the search functionality will return up to
     2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014
 
 ### Filing attributes
+
+Lobbying disclosure filings:
+
+
 
 
 ## Author
