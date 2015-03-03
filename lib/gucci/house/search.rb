@@ -122,7 +122,8 @@ module Gucci
         parse_results.each do |row|
           row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
-          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists) 
+          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
+          search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount) 
           if block_given?
             yield search_result
           else
