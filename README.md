@@ -239,8 +239,6 @@ Lobbying filings:
     - `:income`
     - `:expenses`
     - `:expensesMethod`
-
-
 - `:body`
 
 
