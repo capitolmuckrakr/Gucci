@@ -174,11 +174,28 @@ The following search parameters are available for contribution filings:
 - `:contact_name`
 - `:senate_id`
 
+Details for specific contributions cab be searched as well by setting the contributions flag to "contributions":
+
+:contributions => "contributions"
+
+The following search parameters are available for contribution searches:
+
+- `:organization_name`
+- `:house_id`
+- `:filing_period`
+- `:contribution_type`
+- `:lobbyist_name`
+- `:honoree`
+- `:payee_name`
+- `:contributor_name`
+- `:amount`
+- `:senate_id`
+
 Up to five parameters may be used and the search functionality will return up to 2,000 results. An error is returned if too many parameters are passed or if a parameter is set to an invalid value. Any invalid parameters are ignored.
 
     search = Gucci::House::Search.new(:filing_year => 2020)
     ArgumentError: 1 error(s)
-    2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014
+    2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014, 2015
 
 ### Filing attributes
 *Attributes are dynamically assigned and may vary for different filings of the same type*
