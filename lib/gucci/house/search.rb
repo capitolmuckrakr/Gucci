@@ -11,10 +11,13 @@ module Gucci
 
       def initialize(opts={})
         @download_dir = opts.delete(:download_dir) || Dir.tmpdir
-        @search_type = opts[:contributions] ? :contributions : :disclosures
-        @search_by = opts[:contribution_search] ? :contribution_search : :contribution_filing_search if @search_type == :contributions
+        @search_type = opts[:contributions]? opts[:contributions]=="contributions"? :contributions : :contribution_filings : :disclosure_filings
         opts.delete(:contributions) if opts[:contributions]
-        @search_type == :contributions ? FileUtils.rm_f(Dir.glob("#{@download_dir}/Contributions*.CSV")) : FileUtils.rm_f(Dir.glob("#{@download_dir}/Disclosures*.CSV"))
+        if @search_type =~ /contribution/
+          FileUtils.rm_f(Dir.glob("#{@download_dir}/Contributions*.CSV"))
+        else
+          FileUtils.rm_f(Dir.glob("#{@download_dir}/Disclosures*.CSV"))
+        end
         @browser = browser
         @search_params = validate_params(make_params(opts))
         search(@search_params)
@@ -34,14 +37,23 @@ module Gucci
         profile["browser.helperApps.neverAsk.saveToDisk"] = "text/csv, application/octet-stream"
         driver = Selenium::WebDriver.for :firefox, :profile => profile
         browser = Watir::Browser.new(driver)
-        urls = {:contributions => 'disclosures.house.gov/lc/lcsearch.aspx', :disclosures => 'disclosures.house.gov/ld/ldsearch.aspx' }
-        browser.goto urls[@search_type]
+        url = ''
+        if @search_type =~ /contribution/
+          url = 'disclosures.house.gov/lc/lcsearch.aspx'
+        else
+           url = 'disclosures.house.gov/ld/ldsearch.aspx'
+        end
+        browser.goto url
         return browser
       end
 
       def search(params)
         param_count = 0
         selected_params = {}
+        if @search_type == :contributions
+          @browser.radio(:id=>'radioFilingType_0').set
+          @browser.button(:name => 'cmdSearch').click
+        end
         params.each_key do |param|
           param_count += 1
           selected_params[param_count] = param
@@ -63,7 +75,7 @@ module Gucci
           @browser.button(:name => 'cmdSearch').click
         rescue
         end
-        raise ArgumentError, "There was an error with the Lobby Disclosure Search System. Try your search again or contact the Legislative Resource Center." if @browser.text.scan(/There was an error with the Lobby Disclosure Search System/)[0] == "There was an error with the Lobby Disclosure Search System"
+        raise ArgumentError, "There was an error with the Lobby Search System. Try your search again or contact the Legislative Resource Center." if @browser.text.scan(/There was an error with the Lobby/)[0] == "There was an error with the Lobby"
         begin
           @status = @browser.body.text.scan(/\d+ of \d+ Total \d+/)[0]
           raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
@@ -71,16 +83,24 @@ module Gucci
           @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
           @browser.close
         rescue
-          @search_type == :contributions ? FileUtils.touch("#{@download_dir}/Contributions.CSV") : FileUtils.touch("#{@download_dir}/Disclosures.CSV")
+          if @search_type =~ /contribution/
+            FileUtils.touch("#{@download_dir}/Contributions.CSV")
+          else
+            FileUtils.touch("#{@download_dir}/Disclosures.CSV")
+          end
           return @browser
         end
       end
 
       def parse_results()
         filings = []
-        results_file = @search_type == :contributions ? 'Contributions.CSV' : 'Disclosures.CSV'
-        results_delimiter = @search_type == :contributions ? "," : "\t"
-        open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
+        results_file = @search_type.to_s =~ /contribution/ ? 'Contributions.CSV' : 'Disclosures.CSV'
+        results_delimiter = @search_type.to_s =~ /contribution/ ? "," : "\t"
+        if @search_type.to_s =~ /filings/ 
+          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
+        else
+          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)}
+        end
         filings.shift
         filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest?
         return filings
@@ -88,13 +108,22 @@ module Gucci
 
       def results(&block)
         disclosure_keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
-        contribution_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
-        keys = @search_type == :contributions ? contribution_keys : disclosure_keys
+        contribution_keys = [:filing_id,:house_id,:organization_name,:lobbyist_name,:payee_name,:recipient_name,:contributor_name,:amount ]
+        contribution_filing_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
+        keys = []
+        if @search_type == :contributions
+          keys = contribution_keys
+        elsif @search_type ==  :contribution_filings
+          keys = contribution_filing_keys
+        else
+          keys = disclosure_keys
+        end
         parsed_results = []
         parse_results.each do |row|
-          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contributions
+          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
-          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists) 
+          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
+          search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount) 
           if block_given?
             yield search_result
           else
@@ -105,7 +134,13 @@ module Gucci
       end
 
       def make_params(search_params)
-        @search_type == :contributions ? make_contribution_params(search_params) : make_disclosure_params(search_params)
+        if @search_type == :contributions
+          make_contribution_params(search_params)
+        elsif @search_type == :contribution_filings
+          make_contribution_filing_params(search_params)
+        else
+          make_disclosure_params(search_params)
+        end
       end
 
       def make_disclosure_params(search_params)
@@ -138,7 +173,7 @@ module Gucci
         }
       end
 
-      def make_contribution_params(search_params)
+      def make_contribution_filing_params(search_params)
         {
         'Organization Name' => search_params[:organization_name] || '',
         'House ID' => search_params[:house_id] || '',
@@ -151,9 +186,30 @@ module Gucci
         'Senate ID' => search_params[:senate_id] || ''
         }
       end
+      
+      def make_contribution_params(search_params)
+        {
+        'Organization Name' => search_params[:organization_name] || '',
+        'House ID' => search_params[:house_id] || '',
+        'Filing Period' => search_params[:filing_period] || '',
+        'Contribution Type' => search_params[:contribution_type] || '',
+        'Lobbyist Name' => search_params[:lobbyist_name] || '',
+        'Honoree' => search_params[:honoree] || '',
+        'Payee Name' => search_params[:payee_name] || '',
+        'Contributor Name' => search_params[:contributor_name] || '',
+        'Amount' => search_params[:contributor_name] || '',
+        'Senate ID' => search_params[:senate_id] || ''
+        }
+      end      
 
       def valid_params
-        @search_type == :contributions ? VALID_CONTRIBUTION_PARAMS : VALID_DISCLOSURE_PARAMS
+        if @search_type == :contributions
+          VALID_CONTRIBUTION_PARAMS
+        elsif @search_type == :contribution_filings
+          VALID_CONTRIBUTION_FILING_PARAMS
+        else
+          VALID_DISCLOSURE_PARAMS
+        end
       end
 
       def validate_params(params)
@@ -173,7 +229,7 @@ module Gucci
     end
 
       COUNTRIES = {
-                "AFG" => "AFGHANISTAN",
+      "AFG" => "AFGHANISTAN",
   		"ALB" => "ALBANIA",
   		"ALG" => "ALGERIA",
   		"ASA" => "AMERICAN SAMOA",
@@ -406,7 +462,7 @@ module Gucci
       }
 
       ISSUES = {
-                        "ACC" => "ACCOUNTING",
+        "ACC" => "ACCOUNTING",
   			"ADV" => "ADVERTISING",
   			"AER" => "AEROSPACE",
   			"AGR" => "AGRICULTURE",
@@ -504,10 +560,16 @@ module Gucci
         'Registrant PPB Country' => COUNTRIES.values
       }
 
-      VALID_CONTRIBUTION_PARAMS = {
+      VALID_CONTRIBUTION_FILING_PARAMS = {
         'Filing Period' => ["Mid-Year", "Year-End"],
         'Filing Type' => REPORT_TYPES.values.grep(/year/i).reject{|v| v=~/termination/i},
         'Filing Year' => (2008..Date.today.year).map{ |y| y }
+      }
+
+      VALID_CONTRIBUTION_PARAMS = {
+        'Filing Period' => ["Mid-Year", "Year-End"],
+        #'Filing Type' => REPORT_TYPES.values.grep(/year/i).reject{|v| v=~/termination/i},
+        #'Filing Year' => (2008..Date.today.year).map{ |y| y }
       }
 
   end
