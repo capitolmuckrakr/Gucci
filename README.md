@@ -22,6 +22,7 @@ Then install gucci:
     
     git clone https://github.com/capitolmuckrakr/Gucci.git
     cd Gucci
+    rake install
     bundle install
 
 ## Usage
