@@ -18,9 +18,11 @@ To install on Ubuntu 12.04 or greater, first install xvfb:
 
     apt-get install xvfb
 
-Then install gucci as a gem:
+Then install gucci:
     
-    gem install gucci
+    git clone https://github.com/capitolmuckrakr/Gucci.git
+    cd Gucci
+    bundle install
 
 ## Usage
 
