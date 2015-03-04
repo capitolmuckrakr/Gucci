@@ -179,12 +179,14 @@ Up to five parameters may be used and the search functionality will return up to
 
 ### Filing attributes
 
-Lobbying disclosure filings:
+Lobbying filings:
 
+- `:filing_url`
+- `:filing_id`
+- `:filing_type`
 - `:summary`
     - `:imported`
     - `:pages`
-    - `:regType`
     - `:organizationName`
     - `:prefix`
     - `:firstName`
@@ -201,10 +203,18 @@ Lobbying disclosure filings:
     - `:principal_zip`
     - `:principal_zipext`
     - `:principal_country`
-    - `:contactIntlPhone`
-    - `:registrantGeneralDescription`
     - `:selfSelect`
     - `:clientName`
+    - `:senateID`
+    - `:houseID`
+    - `:reportYear`
+    - `:reportType`
+    - `:printedName`
+    - `:signedDate`
+    *below for registration filings only*
+    - `:regType`
+    - `:contactIntlPhone`
+    - `:registrantGeneralDescription`
     - `:clientAddress`
     - `:clientCity`
     - `:clientState`
@@ -217,15 +227,21 @@ Lobbying disclosure filings:
     - `:prinClientZipExt`
     - `:prinClientCountry`
     - `:clientGeneralDescription`
-    - `:senateID`
-    - `:houseID`
     - `:specific_issues`
     - `:affiliatedUrl`
-    - `:reportYear`
-    - `:reportType`
     - `:effectiveDate`
-    - `:printedName`
-    - `:signedDate`
+    *below for disclosure filings only*
+    - `:submitURL`
+    - `:registrantDifferentAddress`
+    - `:clientGovtEntity`
+    - `:terminationDate`
+    - `:noLobbying`
+    - `:income`
+    - `:expenses`
+    - `:expensesMethod`
+
+
+- `:body`
 
 
 
