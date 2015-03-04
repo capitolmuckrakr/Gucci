@@ -178,9 +178,9 @@ Up to five parameters may be used and the search functionality will return up to
     2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014
 
 ### Filing attributes
-*Attributes are dynamically assigned and may vary for different filings*
+*Attributes are dynamically assigned and may vary for different filings of the same type*
 
-Lobbying filings:
+Lobbying registration filings (LD-1):
 
 - `:filing_url`
 - `:filing_id`
@@ -212,7 +212,6 @@ Lobbying filings:
     - `:reportType`
     - `:printedName`
     - `:signedDate`
-    - *below for registration filings only*
     - `:regType`
     - `:contactIntlPhone`
     - `:registrantGeneralDescription`
@@ -231,17 +230,88 @@ Lobbying filings:
     - `:specific_issues`
     - `:affiliatedUrl`
     - `:effectiveDate`
-    - *below for disclosure filings only*
-    - `:submitURL`
-    - `:registrantDifferentAddress`
-    - `:clientGovtEntity`
-    - `:terminationDate`
-    - `:noLobbying`
-    - `:income`
-    - `:expenses`
-    - `:expensesMethod`
 - `:body`
+    - `:lobbyists` Array
+        - `:lobbyistFirstName`
+        - `:lobbyistLastName`
+        - `:lobbyistSuffix`
+        - `:coveredPosition`
+        - `:lobbyistNew`
+    - `:affiliatedOrgs` Array
+        - `:affiliatedOrgName`
+        - `:affiliatedOrgAddress`
+        - `:affiliatedOrgCity`
+        - `:affiliatedOrgState`
+        - `:affiliatedOrgZip`
+        - `:affiliatedOrgCountry`
+        - `:affiliatedPrinOrgCity`
+        - `:affiliatedPrinOrgState`
+        - `:affiliatedPrinOrgCountry`
+    - `:foreignEntities` Array
+        - `:name`
+        - `:address`
+        - `:city`
+        - `:state`
+        - `:country`
+        - `:prinCity`
+        - `:prinState`
+        - `:prinCountry`
+        - `:contribution`
+        - `:ownership_Percentage`
+    - `:issues` Array
 
+
+Lobbying disclosure filings (LD-2):
+- `:filing_url`
+- `:filing_id`
+- `:filing_type`
+- `:summary`
+- `:imported`
+- `:pages`
+- `:organizationName`
+- `:prefix`
+- `:firstName`
+- `:lastName`
+- `:address1`
+- `:address2`
+- `:city`
+- `:state`
+- `:zip`
+- `:zipext`
+- `:country`
+- `:principal_city`
+- `:principal_state`
+- `:principal_zip`
+- `:principal_zipext`
+- `:principal_country`
+- `:selfSelect`
+- `:clientName`
+- `:senateID`
+- `:houseID`
+- `:reportYear`
+- `:reportType`
+- `:printedName`
+- `:signedDate`
+- `:submitURL`
+- `:registrantDifferentAddress`
+- `:clientGovtEntity`
+- `:terminationDate`
+- `:noLobbying`
+- `:income`
+- `:expenses`
+- `:expensesMethod`
+- `:body`
+    - `:issues` Array
+        - `:issueAreaCode`
+        - `:specific_issues`
+        - `:federal_agencies` Array
+        - `:foreign_entity_issues` Array
+        - `:lobbyists` Array
+            - `:lobbyistFirstName`
+            - `:lobbyistLastName`
+            - `:lobbyistSuffix`
+            - `:coveredPosition`
+            - `:lobbyistNew`
 
 
 ## Author
