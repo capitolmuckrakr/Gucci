@@ -230,7 +230,7 @@ Lobbying filings:
     - `:specific_issues`
     - `:affiliatedUrl`
     - `:effectiveDate`
-    *below for disclosure filings only*
+    - *below for disclosure filings only*
     - `:submitURL`
     - `:registrantDifferentAddress`
     - `:clientGovtEntity`
