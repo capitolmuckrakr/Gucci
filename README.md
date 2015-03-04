@@ -40,6 +40,12 @@ Perform a search for form LD203 filings submitted by Lockheed Martin and its ind
 
     search = Gucci::House::Search.new(:organization_name => "Lockheed Martin", :filing_year => 2013, :contributions => true)
 
+C. Contributions search
+
+Perform a search for honorary contributions and payments to Sen. John McCain listed on multiple form LD203 filings:
+
+search = Gucci::House::Search.new(:honoree=>"McCain",:contribution_type=>"Honorary",:contributions=>"contributions")
+
 The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, an array of search result objects:
 
     results = search.results
@@ -61,7 +67,17 @@ For contribution filings:
 - filing_id
 - house_id
 - organization_name
-- remaining_items
+- remaining_items (the order of the columns returned after the previous columns varies, the Clerk's office apparently detrmines the order based on the search criteria used')
+
+For contribution searches:
+- filing_id (the data matching a search query isn't always in the included attributes, in which case you'll have to load the matching filing using its filing_id')
+- house_id
+- organization_name
+- lobbyist_name (other data may appear in this field instead)
+- payee_name (other data may appear in this field instead)
+- recipient_name (other data may appear in this field instead)
+- contributor_name (other data may appear in this field instead)
+- amount (other data may appear in this field instead)
 
 Create a `Gucci::House::Filing` object from one of the results and download the filing data:
 
