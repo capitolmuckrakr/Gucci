@@ -4,7 +4,7 @@ Gucci is a Ruby library for searching, downloading and parsing lobbying and cont
 
 Gucci::House::Search is a wrapper around the [lobbying](http://disclosures.house.gov/ld/ldsearch.aspx) and [contribution](http://disclosures.house.gov/lc/lcsearch.aspx) search forms on the Clerk's website.
 
-Gucci::House::Filing creates an object corresponding to an electronic filing from the Clerk, either a lobbying registration (LD1), a lobbying report (LD2) or a contribution disclosure (LD203).
+Gucci::House::Filing creates an object corresponding to an electronic filing from the Clerk, either a lobbying registration (LD-1), a lobbying report (LD-2) or a contribution disclosure (LD-203).
 
 Gucci is named after one of the seminal works of lobbying reporting, [Showdown at Gucci Gulch](http://www.amazon.com/Showdown-Gucci-Gulch-Alan-Murray/dp/0394758110).
 
