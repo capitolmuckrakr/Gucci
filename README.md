@@ -44,7 +44,7 @@ C. Contributions search
 
 Perform a search for honorary contributions and payments to Sen. John McCain listed on multiple form LD203 filings:
 
-search = Gucci::House::Search.new(:honoree=>"McCain",:contribution_type=>"Honorary",:contributions=>"contributions")
+    search = Gucci::House::Search.new(:honoree=>"McCain",:contribution_type=>"Honorary",:contributions=>"contributions")
 
 The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, an array of search result objects:
 
