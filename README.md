@@ -312,6 +312,26 @@ Lobbying disclosure filings (LD-2):
             - `:lobbyistSuffix`
             - `:coveredPosition`
             - `:lobbyistNew`
+    - `:updates`
+        - `:clientAddress`
+        - `:clientCity`
+        - `:clientState`
+        - `:clientZip`
+        - `:clientZipext`
+        - `:clientCountry`
+        - `:prinClientCity`
+        - `:prinClientState`
+        - `:prinClientZip`
+        - `:prinClientZipext`
+        - `:prinClientCountry`
+        - `:generalDescription`
+        - `:inactive_lobbyists` Array
+        - `:inactive_ALIs` Array
+        - `:affiliatedUrl`
+        - `:affiliatedOrgs` Array
+        - `:inactiveOrgs` Array
+        - `:foreignEntities` Array
+        - `:inactive_ForeignEntities` Array
 
 
 ## Author
