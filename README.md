@@ -178,7 +178,7 @@ Up to five parameters may be used and the search functionality will return up to
     2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014
 
 ### Filing attributes
-#####*Attributes are dynamically assigned and may vary for different filings*
+*Attributes are dynamically assigned and may vary for different filings*
 
 Lobbying filings:
 
