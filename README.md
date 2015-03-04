@@ -35,19 +35,19 @@ Then install gucci:
 
 A. Lobbying filing disclosures
 
-Perform a search for form LD1 or LD2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
+Perform a search for form LD-1 or LD-2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
 
     search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013)
 
 B. Contribution filing disclosures
 
-Perform a search for form LD203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
+Perform a search for form LD-203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
 
     search = Gucci::House::Search.new(:organization_name => "Lockheed Martin", :filing_year => 2013, :contributions => true)
 
 C. Contributions search
 
-Perform a search for honorary contributions and payments to Sen. John McCain listed on multiple form LD203 filings:
+Perform a search for honorary contributions and payments to Sen. John McCain listed on multiple form LD-203 filings:
 
     search = Gucci::House::Search.new(:honoree=>"McCain",:contribution_type=>"Honorary",:contributions=>"contributions")
 
