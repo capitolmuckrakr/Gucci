@@ -1,6 +1,6 @@
 # Gucci
 
-Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives. The structure and function is heavily indebted to [Fech](https://github.com/NYTimes/Fech) and [fech-search](https://github.com/huffpostdata/fech-search), Ruby libraries for parsing and searching FEC campaign filings.
+Gucci is a Ruby library for searching, downloading and parsing lobbying and contribution filings from the Clerk of the House of Representatives. The structure and function are heavily indebted to [Fech](https://github.com/NYTimes/Fech) and [fech-search](https://github.com/huffpostdata/fech-search), Ruby libraries for parsing and searching FEC campaign filings.
 
 Gucci::House::Search is a wrapper around the [lobbying](http://disclosures.house.gov/ld/ldsearch.aspx) and [contribution](http://disclosures.house.gov/lc/lcsearch.aspx) search forms on the Clerk's website.
 
@@ -286,40 +286,40 @@ Lobbying disclosure filings (LD-2):
 - `:filing_id`
 - `:filing_type`
 - `:summary`
-- `:imported`
-- `:pages`
-- `:organizationName`
-- `:prefix`
-- `:firstName`
-- `:lastName`
-- `:address1`
-- `:address2`
-- `:city`
-- `:state`
-- `:zip`
-- `:zipext`
-- `:country`
-- `:principal_city`
-- `:principal_state`
-- `:principal_zip`
-- `:principal_zipext`
-- `:principal_country`
-- `:selfSelect`
-- `:clientName`
-- `:senateID`
-- `:houseID`
-- `:reportYear`
-- `:reportType`
-- `:printedName`
-- `:signedDate`
-- `:submitURL`
-- `:registrantDifferentAddress`
-- `:clientGovtEntity`
-- `:terminationDate`
-- `:noLobbying`
-- `:income`
-- `:expenses`
-- `:expensesMethod`
+    - `:imported`
+    - `:pages`
+    - `:organizationName`
+    - `:prefix`
+    - `:firstName`
+    - `:lastName`
+    - `:address1`
+    - `:address2`
+    - `:city`
+    - `:state`
+    - `:zip`
+    - `:zipext`
+    - `:country`
+    - `:principal_city`
+    - `:principal_state`
+    - `:principal_zip`
+    - `:principal_zipext`
+    - `:principal_country`
+    - `:selfSelect`
+    - `:clientName`
+    - `:senateID`
+    - `:houseID`
+    - `:reportYear`
+    - `:reportType`
+    - `:printedName`
+    - `:signedDate`
+    - `:submitURL`
+    - `:registrantDifferentAddress`
+    - `:clientGovtEntity`
+    - `:terminationDate`
+    - `:noLobbying`
+    - `:income`
+    - `:expenses`
+    - `:expensesMethod`
 - `:body`
     - `:issues` Array
         - `:issueAreaCode`
