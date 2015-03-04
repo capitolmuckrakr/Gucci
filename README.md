@@ -211,7 +211,7 @@ Lobbying filings:
     - `:reportType`
     - `:printedName`
     - `:signedDate`
-    *below for registration filings only*
+    - *below for registration filings only*
     - `:regType`
     - `:contactIntlPhone`
     - `:registrantGeneralDescription`
