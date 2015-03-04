@@ -14,11 +14,13 @@ Searching with Gucci uses Selenium and Firefox for headless browsing and is limi
 
 Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. If installing on Ubuntu server, Gucci needs Firefox to run. Gucci has received limited testing on OS 10.9 and has not been tested on Windows.
 
-To install on Ubuntu 12.04 or greater:
+To install on Ubuntu 12.04 or greater, first install xvfb:
 
-    sudo apt-get install xvfb
+    apt-get install xvfb
+
+Then install gucci as a gem:
     
-    #gem install gucci
+    gem install gucci
 
 ## Usage
 
@@ -179,6 +181,51 @@ Up to five parameters may be used and the search functionality will return up to
 
 Lobbying disclosure filings:
 
+- `:summary`
+    - `:imported`
+    - `:pages`
+    - `:regType`
+    - `:organizationName`
+    - `:prefix`
+    - `:firstName`
+    - `:lastName`
+    - `:address1`
+    - `:address2`
+    - `:city`
+    - `:state`
+    - `:zip`
+    - `:zipext`
+    - `:country`
+    - `:principal_city`
+    - `:principal_state`
+    - `:principal_zip`
+    - `:principal_zipext`
+    - `:principal_country`
+    - `:contactIntlPhone`
+    - `:registrantGeneralDescription`
+    - `:selfSelect`
+    - `:clientName`
+    - `:clientAddress`
+    - `:clientCity`
+    - `:clientState`
+    - `:clientZip`
+    - `:clientZipExt`
+    - `:clientCountry`
+    - `:prinClientCity`
+    - `:prinClientState`
+    - `:prinClientZip`
+    - `:prinClientZipExt`
+    - `:prinClientCountry`
+    - `:clientGeneralDescription`
+    - `:senateID`
+    - `:houseID`
+    - `:specific_issues`
+    - `:affiliatedUrl`
+    - `:reportYear`
+    - `:reportType`
+    - `:effectiveDate`
+    - `:printedName`
+    - `:signedDate`
 
 
 
