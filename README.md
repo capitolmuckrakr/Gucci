@@ -185,7 +185,6 @@ Lobbying filings:
 - `:filing_id`
 - `:filing_type`
 - `:summary`
-
     - `:imported`
     - `:pages`
     - `:organizationName`
