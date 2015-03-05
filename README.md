@@ -353,6 +353,40 @@ Lobbying disclosure filings (LD-2):
         - `:foreignEntities` Array
         - `:inactive_ForeignEntities` Array
 
+Contribution filings (LD-203):
+
+- `:filing_url`
+- `:filing_id`
+- `:filing_type`
+- `:summary`
+    - `:filerType`
+    - `:organizationName`
+    - `:lobbyistPrefix`
+    - `:lobbyistFirstName`
+    - `:lobbyistMiddleName`
+    - `:lobbyistLastName`
+    - `:lobbyistSuffix`
+    - `:contactName`
+    - `:senateRegID`
+    - `:houseRegID`
+    - `:reportYear`
+    - `:reportType`
+    - `:amendment`
+    - `:comments`
+    - `:signedDate`
+    - `:certifiedcontent`
+    - `:noContributions`
+- `:body`
+    - `:contributions` Array
+        - `:type`
+        - `:contributorName`
+        - `:payeeName`
+        - `:recipientName`
+        - `:amount`
+        - `:date`
+- `:pacs``
+
+
 
 ## Author
 
