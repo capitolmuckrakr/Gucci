@@ -128,6 +128,11 @@ Again, body attributes and their descendants are accessible as method calls:
     filing.body.issues.first.federal_agencies
     => ["U.S. HOUSE OF REPRESENTATIVES", "U.S. SENATE"]
 
+#####Helper methods
+Gucci doesn't do a lot to process the data it reads, in case of parsing errors. There are a couple of methods to cleanup returned data:
+- String#to_strtime --converts a string in datetime format to a Ruby datetime object
+- Hash#empty_record? --returns a boolean value
+
 ### Search parameters
 
 The following search parameters are available for lobbying filings:
