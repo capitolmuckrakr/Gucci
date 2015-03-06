@@ -384,7 +384,7 @@ Contribution filings (LD-203):
         - `:recipientName`
         - `:amount`
         - `:date`
-- `:pacs``
+- `:pacs`
 
 
 
