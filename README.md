@@ -181,7 +181,7 @@ The following search parameters are available for contribution filings:
 
 Details for specific contributions can be searched as well by setting the contributions flag to "contributions":
 
-:contributions => "contributions"
+    :contributions => "contributions"
 
 The following search parameters are available for contribution searches:
 
