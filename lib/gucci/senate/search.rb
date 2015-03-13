@@ -97,6 +97,7 @@ module Gucci
         contribution_keys = [:filing_id,:organization_name, :lobbyist_name,:filing_type, :filing_year, :date_posted ]
         keys = @search_type == :contributions ? contribution_keys : disclosure_keys
         @filings.each do |row| #should we call parse_results function directly or call a variable holding the returned filings?
+          next if row.empty?
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
           #puts search_result
           if block_given?
