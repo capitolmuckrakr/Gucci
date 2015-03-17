@@ -46,6 +46,10 @@ module Gucci
           params.each_pair do |param_key,param_value|
             if valid_params.keys.include?(param_key)
               @browser.select_list(:id=>"#{param_key}").option(:text=>"#{param_value}").select
+            elsif param_key == "datePosted"
+               make_date_params(param_value).each_pair do |date_key,date_value|
+                @browser.text_field(:id => "#{date_key}").set "#{date_value}"
+              end
             else
               @browser.text_field(:id => "#{param_key}").set "#{param_value}"
             end
@@ -143,6 +147,13 @@ module Gucci
         'lobbyistCoveredPositionDescription' => search_params[:lobbyist_position] || '', #validate?
         'registrantCountry' => search_params[:registrant_country] || '',
         'registrantPPBCountry' => search_params[:registrant_ppb_country] || ''
+        }
+      end
+      
+      def make_date_params(date_params)
+        {
+          'datePostedStart' => date_params[:start] || Date.today.strftime('%m/%d/%Y'),
+          'datePostedEnd' => date_params[:end] || Date.today.strftime('%m/%d/%Y')
         }
       end
 
