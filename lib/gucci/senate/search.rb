@@ -29,7 +29,7 @@ module Gucci
         headless.start
         profile = Selenium::WebDriver::Firefox::Profile.new
         driver = Selenium::WebDriver.for :firefox, :profile => profile
-        driver.manage.timeouts.implicit_wait = 15
+        #driver.manage.timeouts.implicit_wait = 15
         browser = Watir::Browser.new(driver)
         urls = {:contributions => 'soprweb.senate.gov/index.cfm?event=lobbyistSelectFields&reset=1', :disclosures => 'soprweb.senate.gov/index.cfm?event=selectfields&reset=1' }
         browser.goto urls[:disclosures]
@@ -44,28 +44,30 @@ module Gucci
         @browser.button(:value=>"Submit").click
         begin
           params.each_pair do |param_key,param_value|
-        #    param_id = valid_params.keys.include?(selected_params[param_order]) ? "DropDownList#{param_order}0" : "TextBox#{param_order}"
             if valid_params.keys.include?(param_key)
               @browser.select_list(:id=>"#{param_key}").option(:text=>"#{param_value}").select
             else
-              puts "invalid selection"
-        #      @browser.text_field(:id => "#{param_id}").set "#{params[selected_params[param_order]]}"
+              @browser.text_field(:id => "#{param_key}").set "#{param_value}"
             end
             sleep 1
           end
           @browser.button(:value=>"Submit").click
-        rescue
+        rescue Exception=>e
+          puts "Something went wrong with the Submit"
+          puts "e.message" #Error checking
         end
         raise ArgumentError, "There was an error with the Senate Lobby Disclosure Search System. Try your search again." if @browser.text.scan(/"An Error Occurred"/)[0] == "An Error Occurred"
         begin
-          @status = @browser.div(:id=>"searchResults_info").text.scan(/\d+ to \d+ of \d+,?\d+? entries/)[0]
+          @status = @browser.div(:id=>"searchResults_info").text.scan(/\d+ to \d+ of \d+,?\d* entries/)[0]
           raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 3000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 3000
           @entries = @status.scan(/of (.*?) entries/).flatten[0].gsub(',','').to_i
           @pages = @entries/100
           @pages +=1 if @entries%100 > 0
           @filings = parse_results
           return @browser
-        rescue
+        rescue Exception=>e
+          puts 'Something went wrong with the status check'
+          puts e.message
           return @browser
         end
       end
@@ -118,7 +120,7 @@ module Gucci
         'registrantName' => search_params[:registrant_name] || '', #validate?
         'clientName' => search_params[:client_name] || '', #validate?
         'registrantID' => search_params[:registrant_id] || '', #validate?
-        'clientID' => search_params[:registrant_id] || '', #validate?
+        'clientID' => search_params[:client_id] || '', #validate?
         'filingPeriod' => search_params[:filing_period] || '',
         'reportType' => search_params[:filing_type] || '',
         'filingYear' => search_params[:filing_year] || '',
