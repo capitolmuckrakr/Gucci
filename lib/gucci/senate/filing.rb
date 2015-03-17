@@ -93,41 +93,16 @@ module Gucci
         problem["backtrace"] = e.backtrace.inspect.to_s
         parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
       end
-
-      def data
-        parse.children[1].children[3]
-      end
-
-#grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
+#grab our single fields(organizationName, reportYear, income, expenses, etc), assign keys
       def summary
-        summary_hash ||= Gucci::Mapper.new
+        keys = [:organizationName, :address1, :address2, :city, :state, :zip, :country, :principal_city, :principal_state, :principal_zip, :principal_country, :contactPrefix, :contactName, :contactPhone, :contactEmail, :senateID, :clientName, :houseID, :reportYear, :unknown, :income, :expenses, :printedName, :signedDate]
         begin
-          parse.children.each do |node| #only one child we need
-            if node.element? #should pass unless filing is malformed
-              node.children.each do |childnode| # access top-level fields
-                if childnode.children.count < 2 && childnode.node_name != 'text' #test for single-value fields such as registrantname, clientname, etc. Skip linefeeds.
-                  begin
-                    summary_hash[childnode.name.to_sym] ||= nil
-                    unless childnode.content.strip.empty?
-                      begin
-                        summary_hash[childnode.name.to_sym] = childnode.content #transform into hash
-                      rescue Exception=>e
-                        parse_problem(e,'@summary.' + childnode.name.to_s)
-                      end
-                    end
-                  rescue Exception=>e
-                    parse_problem(e,childnode)
-                  end
-                end
-              end
-            end
-          end
+          summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
         rescue Exception=>e
           parse_problem(e,'@summary')
         end
         data ||= summary_hash
       end
-
       def multinodes
         multinodelist = []
         parse.children.each do |node| #only one child
@@ -155,7 +130,5 @@ module Gucci
 
 
     end
-
   end
-
 end
