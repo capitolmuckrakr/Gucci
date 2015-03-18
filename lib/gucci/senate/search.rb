@@ -120,7 +120,7 @@ module Gucci
       end
 
       def make_disclosure_params(search_params)
-        {#remake parameters here or in validate_params?
+        {#remake parameter values here or in validate_params?
         'registrantName' => search_params[:registrant_name] || '', #validate?
         'clientName' => search_params[:client_name] || '', #validate?
         'registrantID' => search_params[:registrant_id] || '', #validate?
@@ -133,14 +133,14 @@ module Gucci
         'lobbyistName' => search_params[:lobbyist_name] || '', #validate?
         'affiliatedOrganizationCountry' => search_params[:affiliated_country] || '',
         'affiliatedOrganizationName' => search_params[:affiliated_name] || '', #validate?
-        'amountReported' => search_params[:amount_reported] || '', #validate?
+        #'amountReported' => search_params[:amount_reported] || '', #validate?
         'clientCountry' => search_params[:client_country] || '',
         'clientPPBCountry' => search_params[:client_ppb_country] || '',
         'clientState' => search_params[:client_state] || '',
         'foreignEntityPPBCountry' => search_params[:foreign_entity_ppb_country] || '',
         'foreignEntityCountry' => search_params[:foreign_entity_country] || '',
         'foreignEntityName' => search_params[:foreign_entity_name] || '', #validate?
-        'foreignEntityOwnershipPercentage' => search_params[:foreign_entity_ownership] || '', #validate?
+        #'foreignEntityOwnershipPercentage' => search_params[:foreign_entity_ownership] || '', #validate?
         'governmentEntityContacted' => search_params[:government_entity] || '', #validate?
         'lobbyingIssue' => search_params[:issue_data] || '', #validate?
         'lobbyistCoveredGovernmentPositionDescription' => search_params[:lobbyist_covered] || '',
