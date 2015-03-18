@@ -58,7 +58,7 @@ module Gucci
           @browser.button(:value=>"Submit").click
         rescue Exception=>e
           puts "Something went wrong with the Submit"
-          puts "e.message" #Error checking
+          puts e.message #Error checking
         end
         raise ArgumentError, "There was an error with the Senate Lobby Disclosure Search System. Try your search again." if @browser.text.scan(/"An Error Occurred"/)[0] == "An Error Occurred"
         begin
@@ -149,7 +149,7 @@ module Gucci
         'registrantPPBCountry' => search_params[:registrant_ppb_country] || ''
         }
       end
-      
+
       def make_date_params(date_params)
         {
           'datePostedStart' => date_params[:start] || Date.today.strftime('%m/%d/%Y'),
