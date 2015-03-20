@@ -75,7 +75,7 @@ For contribution filings:
 - remaining_items (the order of the columns returned after the previous columns varies, the Clerk's office apparently detrmines the order based on the search criteria used)
 
 For contribution searches:
-- filing_id (the data matching a search query isn't always in the included attributes, in which case you'll have to load the matching filing using its filing_id')
+- filing_id (the data matching a search query isn't always in the included attributes, in which case you'll have to load the matching filing using its filing_id)
 - house_id
 - organization_name
 - lobbyist_name (other data may appear in this field instead)
