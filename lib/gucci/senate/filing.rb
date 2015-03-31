@@ -3,7 +3,6 @@ require 'open-uri'
 require 'ensure/encoding'
 
 module Gucci
-
   module Senate
     FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
 
