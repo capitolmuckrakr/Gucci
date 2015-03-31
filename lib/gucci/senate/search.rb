@@ -183,7 +183,7 @@ module Gucci
     end
 
       COUNTRIES = {
-                "AFG" => "AFGHANISTAN",
+      "AFG" => "AFGHANISTAN",
   		"ALB" => "ALBANIA",
   		"ALG" => "ALGERIA",
   		"ASA" => "AMERICAN SAMOA",
