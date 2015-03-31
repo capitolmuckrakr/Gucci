@@ -10,7 +10,7 @@ Gucci is named after one of the seminal works of lobbying reporting, [Showdown a
 
 ## Installation
 
-Searching with Gucci uses phantomjs, which must be installed and accesible on your system's path.'
+Searching with Gucci uses phantomjs, which must be installed and accesible on your system's path.
 
 Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. If installing on Ubuntu server, Gucci needs Firefox to run. Gucci has received limited testing on OS 10.9 and has not been tested on Windows.
 
