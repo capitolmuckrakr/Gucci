@@ -7,17 +7,13 @@ module Gucci
   module House
     class Search
 
-      attr_accessor :download_dir, :search_params, :status
+      attr_accessor :download_dir, :search_params, :status, :pages, :filings
 
       def initialize(opts={})
-        @download_dir = opts.delete(:download_dir) || Dir.tmpdir
         @search_type = opts[:contributions]? opts[:contributions]=="contributions"? :contributions : :contribution_filings : :disclosure_filings
         opts.delete(:contributions) if opts[:contributions]
-        if @search_type =~ /contribution/
-          FileUtils.rm_f(Dir.glob("#{@download_dir}/Contributions*.CSV"))
-        else
-          FileUtils.rm_f(Dir.glob("#{@download_dir}/Disclosures*.CSV"))
-        end
+        @verbose = opts[:verbose] ? true : false
+        opts.delete(:verbose) if opts[:verbose]
         @browser = browser
         @search_params = validate_params(make_params(opts))
         search(@search_params)
@@ -25,18 +21,7 @@ module Gucci
       end
 
       def browser
-        headless = Headless.new(
-          display:         $$#,
-          #destroy_at_exit: false,
-          #reuse:           true
-        )
-        headless.start
-        profile = Selenium::WebDriver::Firefox::Profile.new
-        profile['browser.download.folderList'] = 2
-        profile['browser.download.dir'] = @download_dir
-        profile["browser.helperApps.neverAsk.saveToDisk"] = "text/csv, application/octet-stream"
-        driver = Selenium::WebDriver.for :firefox, :profile => profile
-        browser = Watir::Browser.new(driver)
+        browser = Watir::Browser.new :phantomjs
         url = ''
         if @search_type =~ /contribution/
           url = 'disclosures.house.gov/lc/lcsearch.aspx'
@@ -78,36 +63,41 @@ module Gucci
         raise ArgumentError, "There was an error with the Lobby Search System. Try your search again or contact the Legislative Resource Center." if @browser.text.scan(/There was an error with the Lobby/)[0] == "There was an error with the Lobby"
         begin
           @status = @browser.body.text.scan(/\d+ of \d+ Total \d+/)[0]
-          raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 2000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 2000
-          @browser.radio(:id => 'RadioButtonList1_1' ).set # for CSV download
-          @browser.button(:name => 'cmdDownload').click #download a file of the search results, extension is CSV, but it's actually tab separated
-          @browser.close
+          @pages = @status.scan(/of (.*?) Total/).flatten[0].gsub(',','').to_i
+          @pages +=1 if @pages > 1 #do we need to do this?
+          @filings = parse_results
+          return @browser
         rescue
-          if @search_type =~ /contribution/
-            FileUtils.touch("#{@download_dir}/Contributions.CSV")
-          else
-            FileUtils.touch("#{@download_dir}/Disclosures.CSV")
-          end
           return @browser
         end
       end
 
       def parse_results()
         filings = []
-        results_file = @search_type.to_s =~ /contribution/ ? 'Contributions.CSV' : 'Disclosures.CSV'
-        results_delimiter = @search_type.to_s =~ /contribution/ ? "," : "\t"
-        if @search_type.to_s =~ /filings/ 
-          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)[0..-2]}
-        else
-          open("#{@download_dir}/#{results_file}","r").each_line{|l| l.gsub!('"',''); filings << l.split(results_delimiter)}
+        while @pages >0
+          puts "Processing page #{@pages}" if @verbose
+          rownum = 0
+          @browser.trs(:class=>/(defaultRow|altRow)/).each do |row|
+            rownum+=1 if @verbose
+            puts "Processing row #{rownum} from page #{@pages}" if @verbose
+            newrow = []
+            row.tds.each{ |t| newrow.push(t.text) }
+            filing_id = ''
+            filing_id+=row.html
+            newrow.unshift(filing_id.scan(/id\=(\d+)/)[0])
+            newrow = newrow.flatten
+            filings.push(newrow)
+          end
+          @pages-=1
+          @browser.button(:name=>"btnNext2").click if @pages > 0
         end
-        filings.shift
-        filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest?
+        filings.sort_by!{|e| e[0].to_i}.reverse! #largest filing_id is newest
         return filings
       end
 
       def results(&block)
-        disclosure_keys = [:filing_id, :registrant_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists]
+        #rewrite keys based on param selection?
+        disclosure_keys = [:filing_id, :house_id, :registrant_name, :client_name, :filing_year, :filing_period, :lobbyists, :remaining_items]
         contribution_keys = [:filing_id,:house_id,:organization_name,:lobbyist_name,:payee_name,:recipient_name,:contributor_name,:amount ]
         contribution_filing_keys = [:filing_id,:house_id,:organization_name,:remaining_items ]
         keys = []
@@ -119,12 +109,13 @@ module Gucci
           keys = disclosure_keys
         end
         parsed_results = []
-        parse_results.each do |row|
+        @filings.each do |row|
           next if row.empty?
           row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
+          row = [row[0..6],row[7..-1].join(",")].flatten unless @search_type.to_s =~ /contribution/
           search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
-          search_result[:lobbyists] = search_result.lobbyists.split("|").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
-          search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount) 
+          search_result[:lobbyists] = search_result.lobbyists.split("\n").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
+          search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount)
           if block_given?
             yield search_result
           else
@@ -187,7 +178,7 @@ module Gucci
         'Senate ID' => search_params[:senate_id] || ''
         }
       end
-      
+
       def make_contribution_params(search_params)
         {
         'Organization Name' => search_params[:organization_name] || '',
@@ -201,7 +192,7 @@ module Gucci
         'Amount' => search_params[:contributor_name] || '',
         'Senate ID' => search_params[:senate_id] || ''
         }
-      end      
+      end
 
       def valid_params
         if @search_type == :contributions
