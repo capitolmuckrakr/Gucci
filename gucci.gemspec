@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'nokogiri'
   spec.add_dependency 'ensure-encoding'
   spec.add_dependency 'watir-webdriver'
-  spec.add_dependency 'headless'
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
