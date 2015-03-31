@@ -10,15 +10,12 @@ Gucci is named after one of the seminal works of lobbying reporting, [Showdown a
 
 ## Installation
 
-Searching with Gucci uses Selenium and Firefox for headless browsing and is limited to platforms that support Xvfb, including Ubuntu and OSX using Macports only, not Homebrew. Changing that is on the list of tasks for the project.
+Searching with Gucci uses phantomjs, which must be installed and accesible on your system's path.'
 
 Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. If installing on Ubuntu server, Gucci needs Firefox to run. Gucci has received limited testing on OS 10.9 and has not been tested on Windows.
 
-To install on Ubuntu 12.04 or greater, first install xvfb:
+To install on Ubuntu 12.04 or greater:
 
-    apt-get install xvfb
-
-Then install gucci:
     
     git clone https://github.com/capitolmuckrakr/Gucci.git
     cd Gucci
