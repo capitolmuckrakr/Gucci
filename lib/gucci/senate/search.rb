@@ -21,16 +21,7 @@ module Gucci
       end
 
       def browser
-        headless = Headless.new(
-          display:         $$#,
-          #destroy_at_exit: false,
-          #reuse:           true
-        )
-        headless.start
-        profile = Selenium::WebDriver::Firefox::Profile.new
-        driver = Selenium::WebDriver.for :firefox, :profile => profile
-        #driver.manage.timeouts.implicit_wait = 15
-        browser = Watir::Browser.new(driver)
+        browser = Watir::Browser.new :phantomjs
         urls = {:contributions => 'soprweb.senate.gov/index.cfm?event=lobbyistSelectFields&reset=1', :disclosures => 'soprweb.senate.gov/index.cfm?event=selectfields&reset=1' }
         browser.goto urls[:disclosures]
         return browser
