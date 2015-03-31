@@ -97,6 +97,8 @@ module Gucci
       end
 #grab our single fields(organizationName, reportYear, income, expenses, etc), assign keys
       def summary
+        registration_keys = [:effectiveDate, :houseID, :senateID, :organizationName, :address1, :address2, :city, :state, :zip, :country, :unknown1, :unknown2, :unknown3, :unknown4,:contactName, :contactPhone, :contactEmail, :registrantGeneralDescription, :clientName, :clientAddress, :clientCity, :clientState, :clientZip, :clientCountry, :unknown5, :unknown6, :unknown7, :unknown8, :clientGeneralDescription,  :printedName, :signedDate]
+        disclosure_keys = [:organizationName, :address1, :address2, :city, :state, :zip, :country, :principal_city, :principal_state, :principal_zip, :principal_country, :contactPrefix, :contactName, :contactPhone, :contactEmail, :senateID, :clientName, :houseID, :reportYear, :unknown, :income, :expenses, :printedName, :signedDate]
         keys = [:organizationName, :address1, :address2, :city, :state, :zip, :country, :principal_city, :principal_state, :principal_zip, :principal_country, :contactPrefix, :contactName, :contactPhone, :contactEmail, :senateID, :clientName, :houseID, :reportYear, :unknown, :income, :expenses, :printedName, :signedDate]
         begin
           summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
