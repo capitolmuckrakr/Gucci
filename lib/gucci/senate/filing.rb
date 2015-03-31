@@ -100,8 +100,16 @@ module Gucci
         registration_keys = [:effectiveDate, :houseID, :senateID, :organizationName, :address1, :address2, :city, :state, :zip, :country, :unknown1, :unknown2, :unknown3, :unknown4,:contactName, :contactPhone, :contactEmail, :registrantGeneralDescription, :clientName, :clientAddress, :clientCity, :clientState, :clientZip, :clientCountry, :unknown5, :unknown6, :unknown7, :unknown8, :clientGeneralDescription,  :printedName, :signedDate]
         disclosure_keys = [:organizationName, :address1, :address2, :city, :state, :zip, :country, :principal_city, :principal_state, :principal_zip, :principal_country, :contactPrefix, :contactName, :contactPhone, :contactEmail, :senateID, :clientName, :houseID, :reportYear, :unknown, :income, :expenses, :printedName, :signedDate]
         begin
-          keys = disclosure_keys
-          summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
+          if filing_type == :lobbyingdisclosure1
+            keys = registration_keys
+            summary_values = parse.css("div")[1..-1].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}
+            summary_values.slice!(29..31)
+            summary_values.slice!(29..38)
+            summary_hash = Gucci::Mapper[*keys.zip(summary_values).flatten]
+          else #filing_type == :lobbyingdisclosure2 #need to change this once we add contribution searching
+            keys = disclosure_keys
+            summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
+          end
         rescue Exception=>e
           parse_problem(e,'@summary')
         end
