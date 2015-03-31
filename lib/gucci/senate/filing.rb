@@ -31,9 +31,12 @@ module Gucci
       end
 
       def filing_type
-        parse.children[1].children[1].children[3].text.to_sym || nil
+        if parse.children[1].children[1].children[3].text.scan(/\d+/)[0].to_i > 2
+          Gucci::Senate::FILING_TYPES[0]
+        else
+          Gucci::Senate::FILING_TYPES[parse.children[1].children[1].children[3].text.scan(/\d+/)[0].to_i ]
+        end
       end
-
       def file_path
         File.join(download_dir.to_s, file_name.to_s)
       end
