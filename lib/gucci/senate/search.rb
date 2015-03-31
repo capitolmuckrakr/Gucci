@@ -1,5 +1,4 @@
 require 'watir-webdriver'
-require 'headless'
 require 'fileutils'
 require 'date'
 
