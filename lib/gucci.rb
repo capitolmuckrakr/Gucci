@@ -7,6 +7,7 @@ require "gucci/mapper"
 require 'tmpdir'
 
 module Gucci
+  FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
   module House
     class Search
     end

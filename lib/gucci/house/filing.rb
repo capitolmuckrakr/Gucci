@@ -6,7 +6,6 @@ require_relative 'filingbody'
 module Gucci
 
   module House
-    FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
 
     class Filing
 

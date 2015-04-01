@@ -4,7 +4,6 @@ require 'ensure/encoding'
 
 module Gucci
   module Senate
-    FILING_TYPES = [:contributiondisclosure,:lobbyingdisclosure1,:lobbyingdisclosure2]
 
     class Filing
 
@@ -32,9 +31,9 @@ module Gucci
 
       def filing_type
         if parse.children[1].children[1].children[3].text.scan(/\d+/)[0].to_i > 2
-          Gucci::Senate::FILING_TYPES[0]
+          FILING_TYPES[0]
         else
-          Gucci::Senate::FILING_TYPES[parse.children[1].children[1].children[3].text.scan(/\d+/)[0].to_i ]
+          FILING_TYPES[parse.children[1].children[1].children[3].text.scan(/\d+/)[0].to_i ]
         end
       end
       def file_path
