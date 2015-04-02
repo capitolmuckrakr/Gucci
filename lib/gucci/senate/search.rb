@@ -51,6 +51,7 @@ module Gucci
           puts e.message #Error checking
         end
         raise ArgumentError, "There was an error with the Senate Lobby Disclosure Search System. Try your search again." if @browser.text.scan(/"An Error Occurred"/)[0] == "An Error Occurred"
+        raise ArgumentError, "No records found, please refine your search or perform a new search." unless @browser.text.scan(/No Records Found/)[0].nil?
         begin
           @status = @browser.div(:id=>"searchResults_info").text.scan(/\d+ to \d+ of \d+,?\d* entries/)[0]
           raise ArgumentError, "Query returned #{@status.scan(/\d+/)[-1]} records. Cannot search for more than 3000 records. Please refine search." if @status.scan(/\d+/)[-1].to_i > 3000
