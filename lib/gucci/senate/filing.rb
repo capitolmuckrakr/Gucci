@@ -16,6 +16,8 @@ module Gucci
       DISCLOSURE_URL_BASE = 'http://soprweb.senate.gov/index.cfm?event=getFilingDetails&filingTypeID=3&filingID='
 
       CONTRIBUTION_URL_BASE = 'http://soprweb.senate.gov/index.cfm?event=getFilingDetails&filingTypeID=87&filingID='
+      
+      REGISTRANT_TYPE = [:organization,:individual]
 
       def initialize(filing_id='',opts={})
         @filing_url_base = [REGISTRATION_URL_BASE,DISCLOSURE_URL_BASE,CONTRIBUTION_URL_BASE]
@@ -94,18 +96,28 @@ module Gucci
         problem["backtrace"] = e.backtrace.inspect.to_s
         parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
       end
+      
+      def reg_type # determine if the registrant is an individual or an organization for registrations
+        counter = 0
+        parse.css('p')[2].css('input').map do |i|
+          return REGISTRANT_TYPE[counter] if i.has_attribute?('checked')
+          counter +=1
+        end
+      end
+      
 #grab our single fields(organizationName, reportYear, income, expenses, etc), assign keys
       def summary
-        registration_keys = [:effectiveDate, :houseID, :senateID, :organizationName, :address1, :address2, :city, :state, :zip, :country, :unknown1, :unknown2, :unknown3, :unknown4,:contactName, :contactPhone, :contactEmail, :registrantGeneralDescription, :clientName, :clientAddress, :clientCity, :clientState, :clientZip, :clientCountry, :unknown5, :unknown6, :unknown7, :unknown8, :clientGeneralDescription,  :printedName, :signedDate]
+        organization_keys = [:effectiveDate, :houseID, :senateID, :organizationName, :address1, :address2, :city, :state, :zip, :country, :unknown1, :unknown2, :unknown3, :unknown4,:contactName, :contactPhone, :contactEmail, :registrantGeneralDescription, :clientName, :clientAddress, :clientCity, :clientState, :clientZip, :clientCountry, :unknown5, :unknown6, :unknown7, :unknown8, :clientGeneralDescription,  :printedName, :signedDate]
+        individual_keys = [:effectiveDate, :houseID, :senateID, :prefix, :firstName, :lastName, :address1, :address2, :city, :state, :zip, :country, :unknown1, :unknown2, :unknown3, :unknown4,:contactName, :contactPhone, :contactEmail, :registrantGeneralDescription, :clientName, :clientAddress, :clientCity, :clientState, :clientZip, :clientCountry, :unknown5, :unknown6, :unknown7, :unknown8, :clientGeneralDescription,  :printedName, :signedDate]
         disclosure_keys = [:organizationName, :address1, :address2, :city, :state, :zip, :country, :principal_city, :principal_state, :principal_zip, :principal_country, :contactPrefix, :contactName, :contactPhone, :contactEmail, :senateID, :clientName, :houseID, :reportYear, :unknown, :income, :expenses, :printedName, :signedDate]
         begin
           if filing_type == :lobbyingdisclosure1
-            keys = registration_keys
+            keys = reg_type == :individual ? individual_keys : organization_keys
             summary_values = parse.css("div")[1..-1].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}
-            summary_values.slice!(29..31)
-            summary_values.slice!(29..38)
+            reg_type == :individual ? summary_values.slice!(31..33) : summary_values.slice!(29..31)
+            reg_type == :individual ? summary_values.slice!(31..40) : summary_values.slice!(29..38)
             summary_hash = Gucci::Mapper[*keys.zip(summary_values).flatten]
-          else #filing_type == :lobbyingdisclosure2 #need to change this once we add contribution searching
+          else #filing_type == :lobbyingdisclosure2 #need to change this once we add contribution searching or should I assign subclasses for the different filign types?
             keys = disclosure_keys
             summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
           end
