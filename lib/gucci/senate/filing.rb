@@ -116,6 +116,11 @@ module Gucci
             summary_values = parse.css("div")[1..-1].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}
             reg_type == :individual ? summary_values = [summary_values.slice(0..30),summary_values[-2..-1]].flatten : summary_values = [summary_values.slice(0..28),summary_values[-2..-1]].flatten
             summary_hash = Gucci::Mapper[*keys.zip(summary_values).flatten]
+            begin
+              summary_hash[:specific_issues] = parse.css('p')[9].text.strip.gsub(/\n+/,'; ')
+            rescue
+              summary_hash[:specific_issues] = parse.css('p')[9].text.strip
+            end
           else #filing_type == :lobbyingdisclosure2 #need to change this once we add contribution searching or should I assign subclasses for the different filign types?
             keys = disclosure_keys
             summary_hash = Gucci::Mapper[*keys.zip(parse.css("div")[1..24].map{|d| d.text.gsub(/[[:space:]]/, ' ').strip}).flatten]
