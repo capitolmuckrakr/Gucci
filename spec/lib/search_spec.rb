@@ -14,7 +14,8 @@ describe Gucci do
 
     it "should return an array of results" do
       search = Gucci::House::Search.new(:filing_year => Date.today.year, :issue_code => "DEFENSE")
-      expect(search.results).to be_a_kind_of(Array)
+      results = search.results
+      expect(results).to be_a_kind_of(Array)
     end
 
     #it "should raise ArgumentError if more than 2000 search results are returned" do
