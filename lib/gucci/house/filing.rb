@@ -196,6 +196,23 @@ module Gucci
         @download_dir = @opts[:download_dir] || Dir.tmpdir
       end
 
+# we need this to parse agencies for older filings with a slightly different xml tree
+      def parse_old_agencies(n)
+        agencies_data = n.children.select{|a| a if a.name == "federal_agencies" }[0]
+        agencies_result = []
+        agencies_data.children.map do |a|
+          agencies_result.push('U.S. House of Representatives') if a.name == "house" && a.text =="Y"
+          agencies_result.push('U.S. Senate') if a.name == "senate" && a.text =="Y"
+          other = a.text if a.name == "other" && a.text != ''
+          if other.respond_to? :split #try to separate each agency into an array element
+            agencies_result += other.gsub(/(\n|\s{10}|;|.  )/,',').split(',')
+          else
+            agencies_result.push(other)
+          end
+        end
+        agencies_result.compact!
+        return agencies_result
+      end
 #grab our fields for alis(issues,agencies,lobbyists,etc), remove blank text nodes, assign keys
       def parse_issues
         begin
@@ -222,6 +239,7 @@ module Gucci
               end
               issuefields[:lobbyists] = @lobbyists #need to assign one lobbyist hash for empties
               @agencies = issuefields[:federal_agencies].split(",").each {|agency| agency.strip! if agency.respond_to? :strip! } if issuefields[:federal_agencies].respond_to? :split
+              @agencies = parse_old_agencies(m) unless issuefields[:federal_agencies].respond_to? :split
               issuefields[:federal_agencies] = @agencies
               @descriptions = []
               if issuefields[:specific_issues].kind_of? Nokogiri::XML::Element
