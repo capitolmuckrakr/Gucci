@@ -86,6 +86,8 @@ module Gucci
             newrow.unshift(filing_id.scan(/id\=(\d+)/)[0])
             newrow = newrow.flatten
             filings.push(newrow)
+            newrow = nil
+            filing_id = nil
           end
           @pages-=1
           @browser.button(:name=>"btnNext2").click if @pages > 0
