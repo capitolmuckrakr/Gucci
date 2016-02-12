@@ -4,10 +4,15 @@ require 'date'
 
 module Gucci
   module House
+    # Gucci::House::Search is an interface for the Clerk of the House's lobbying filing search forms
+    # (http://disclosures.house.gov/ld/ldsearch.aspx)
+    # (http://disclosures.house.gov/lc/lcsearch.aspx)
     class Search
 
       attr_accessor :download_dir, :search_params, :status, :pages, :filings
-
+      
+    # @param [Hash] opts a hash of parameters to be
+    # passed to the search form.
       def initialize(opts={})
         @search_type = opts[:contributions]? opts[:contributions]=="contributions"? :contributions : :contribution_filings : :disclosure_filings
         opts.delete(:contributions) if opts[:contributions]
