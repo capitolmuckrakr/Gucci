@@ -15,6 +15,17 @@ String.class_eval do
   end
 end
 
+String.class_eval do
+   def to_money
+     begin
+       m = "%.2f" % self.scan(/[0-9.]/).join
+       m = m.to_f
+     rescue
+       self
+     end
+   end
+end
+
 module Gucci
   class Mapper < Hash
     def method_missing(name)
