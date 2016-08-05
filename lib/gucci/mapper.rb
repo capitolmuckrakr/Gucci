@@ -18,8 +18,8 @@ end
 String.class_eval do
    def to_money
      begin
-       m = "%.2f" % self.scan(/[0-9.]/).join
-       m = m.to_f
+       m = self.scan(/[0-9.]/).join
+       m = m.to_f.round(2)
      rescue
        self
      end
