@@ -150,15 +150,17 @@ module Gucci
 
       def make_contribution_params(search_params)
         {
-        'Organization Name' => search_params[:organization_name] || '',
-        'House ID' => search_params[:house_id] || '',
-        'Filing Period' => search_params[:filing_period] || '',
-        'Filing Type' => search_params[:filing_type] || '',
-        'PAC' => search_params[:pac] || '',
-        'Filing Year' => search_params[:filing_year] || '',
-        'Lobbyist Name' => search_params[:lobbyist_name] || '',
-        'Contact Name' => search_params[:contact_name] || '',
-        'Senate ID' => search_params[:senate_id] || ''
+        'registrantName' => search_params[:registrant_name] || '',
+        'registrantLobbyistName' => search_params[:registrant_name_with_lobbyists] || '',
+        'lobbyistName' => search_params[:lobbyist_name] || '',
+        'reportType' => search_params[:filing_type] || '',
+        'filingDate' => search_params[:date_posted] || '',
+        'filingYear' => search_params[:filing_year] || '',
+        'pac' => search_params[:contributor_name] || '',
+        'payee' => search_params[:payee_name] || '',
+        'honoree' => search_params[:honoree_name] || '',
+        'contributionType' => search_params[:contribution_type] || '',
+        'contributionDate' => search_params[:contribution_date] || ''
         }
       end
 
