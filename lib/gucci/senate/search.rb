@@ -163,6 +163,13 @@ module Gucci
         'contributionDate' => search_params[:contribution_date] || ''
         }
       end
+      
+      def make_contrib_date_params(date_params)
+        {
+          'contributionDateStart' => date_params[:start] || Date.today.strftime('%m/%d/%Y'),
+          'contributionDateEnd' => date_params[:end] || Date.today.strftime('%m/%d/%Y')
+        }
+      end
 
       def valid_params
         @search_type == :contributions ? VALID_CONTRIBUTION_PARAMS : VALID_DISCLOSURE_PARAMS
