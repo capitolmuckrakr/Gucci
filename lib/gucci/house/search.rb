@@ -173,7 +173,7 @@ module Gucci
       def make_contribution_filing_params(search_params)
         {
         'Organization Name' => search_params[:organization_name] || '',
-        'House ID' => search_params[:house_id] || '',
+        'House ID' => search_params[:registrant_id] || '',
         'Filing Period' => search_params[:filing_period] || '',
         'Filing Type' => search_params[:filing_type] || '',
         'PAC' => search_params[:pac] || '',
@@ -187,7 +187,7 @@ module Gucci
       def make_contribution_params(search_params)
         {
         'Organization Name' => search_params[:organization_name] || '',
-        'House ID' => search_params[:house_id] || '',
+        'House ID' => search_params[:registrant_id] || '',
         'Filing Period' => search_params[:filing_period] || '',
         'Contribution Type' => search_params[:contribution_type] || '',
         'Lobbyist Name' => search_params[:lobbyist_name] || '',
