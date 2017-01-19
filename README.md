@@ -136,7 +136,7 @@ The following search parameters are available for lobbying filings:
 
 - `:registrant_name`
 - `:client_name`
-- `:house_id`
+- `:registrant_id`
 - `:filing_period`
 - `:filing_type`
 - `:filing_year`
