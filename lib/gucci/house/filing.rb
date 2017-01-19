@@ -309,7 +309,7 @@ module Gucci
               @updates[:inactiveOrgs].children.each do |ia|
                 next if ia.content.empty?
                 @inactiveOrg = ia.content
-                @inactiveOrgs.push(@inactive_ali)
+                @inactiveOrgs.push(@inactiveOrg)
               end
               @updates[:inactiveOrgs] = @inactiveOrgs
             rescue Exception=>e
