@@ -228,14 +228,16 @@ module Gucci
               end
               m.children.map{ |i| issuefields[i.name.to_sym] = i unless i.children.count < 2 }
               @lobbyists = []
-              issuefields[:lobbyists].children.each do |l|
-                next if l.content == 'N'
-                @lobbyist = Gucci::Mapper.new
-                l.children.each do |f|
-                  @lobbyist[f.name.to_sym] = nil
-                  @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+              unless issuefields[:lobbyists].nil?
+                issuefields[:lobbyists].children.each do |l|
+                  next if l.content == 'N'
+                  @lobbyist = Gucci::Mapper.new
+                  l.children.each do |f|
+                    @lobbyist[f.name.to_sym] = nil
+                    @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+                  end
+                  @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
                 end
-                @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
               end
               issuefields[:lobbyists] = @lobbyists #need to assign one lobbyist hash for empties
               @agencies = issuefields[:federal_agencies].split(",").each {|agency| agency.strip! if agency.respond_to? :strip! } if issuefields[:federal_agencies].respond_to? :split
