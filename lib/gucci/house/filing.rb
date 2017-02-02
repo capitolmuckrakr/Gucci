@@ -217,40 +217,42 @@ module Gucci
       def parse_issues
         begin
           data = []
-          multi(0).children.each do |m|
-            if m.node_name != 'text'
-              issuefields = Gucci::Mapper.new
-              m.children.map{ |i| issuefields[i.name.to_sym] = nil if i.children.count < 2 }
-              m.children.map do |i|
-                unless i.content.strip.empty?
-                  issuefields[i.name.to_sym] = i.content if i.children.count < 2
-                end
-              end
-              m.children.map{ |i| issuefields[i.name.to_sym] = i unless i.children.count < 2 }
-              @lobbyists = []
-              unless issuefields[:lobbyists].nil?
-                issuefields[:lobbyists].children.each do |l|
-                  next if l.content == 'N'
-                  @lobbyist = Gucci::Mapper.new
-                  l.children.each do |f|
-                    @lobbyist[f.name.to_sym] = nil
-                    @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+          if multi(0).name == 'alis'
+            multi(0).children.each do |m|
+              if m.node_name != 'text'
+                issuefields = Gucci::Mapper.new
+                m.children.map{ |i| issuefields[i.name.to_sym] = nil if i.children.count < 2 }
+                m.children.map do |i|
+                  unless i.content.strip.empty?
+                    issuefields[i.name.to_sym] = i.content if i.children.count < 2
                   end
-                  @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
                 end
-              end
-              issuefields[:lobbyists] = @lobbyists #need to assign one lobbyist hash for empties
-              @agencies = issuefields[:federal_agencies].split(",").each {|agency| agency.strip! if agency.respond_to? :strip! } if issuefields[:federal_agencies].respond_to? :split
-              @agencies = parse_old_agencies(m) unless issuefields[:federal_agencies].respond_to? :split
-              issuefields[:federal_agencies] = @agencies
-              @descriptions = []
-              if issuefields[:specific_issues].kind_of? Nokogiri::XML::Element
-                issuefields[:specific_issues].children.each do |si|
-                  @descriptions.push(si.content)
+                m.children.map{ |i| issuefields[i.name.to_sym] = i unless i.children.count < 2 }
+                @lobbyists = []
+                unless issuefields[:lobbyists].nil?
+                  issuefields[:lobbyists].children.each do |l|
+                    next if l.content == 'N'
+                    @lobbyist = Gucci::Mapper.new
+                    l.children.each do |f|
+                      @lobbyist[f.name.to_sym] = nil
+                      @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+                    end
+                    @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
+                  end
                 end
-                issuefields[:specific_issues] = @descriptions
+                issuefields[:lobbyists] = @lobbyists #need to assign one lobbyist hash for empties
+                @agencies = issuefields[:federal_agencies].split(",").each {|agency| agency.strip! if agency.respond_to? :strip! } if issuefields[:federal_agencies].respond_to? :split
+                @agencies = parse_old_agencies(m) unless issuefields[:federal_agencies].respond_to? :split
+                issuefields[:federal_agencies] = @agencies
+                @descriptions = []
+                if issuefields[:specific_issues].kind_of? Nokogiri::XML::Element
+                  issuefields[:specific_issues].children.each do |si|
+                    @descriptions.push(si.content)
+                  end
+                  issuefields[:specific_issues] = @descriptions
+                end
+                data.push(issuefields)
               end
-              data.push(issuefields)
             end
           end
           data || nil
