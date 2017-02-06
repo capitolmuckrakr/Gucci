@@ -221,8 +221,8 @@ module Gucci
             multi(0).children.each do |m|
               if m.node_name != 'text'
                 issuefields = Gucci::Mapper.new
-                m.children.map{ |i| issuefields[i.name.to_sym] = nil if i.children.count < 2 }
                 m.children.map do |i|
+                  issuefields[i.name.to_sym] = nil if i.children.count < 2
                   unless i.content.strip.empty?
                     issuefields[i.name.to_sym] = i.content if i.children.count < 2
                   end
