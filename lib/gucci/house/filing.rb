@@ -226,8 +226,8 @@ module Gucci
                   unless i.content.strip.empty?
                     issuefields[i.name.to_sym] = i.content if i.children.count < 2
                   end
+                  issuefields[i.name.to_sym] = i unless i.children.count < 2
                 end
-                m.children.map{ |i| issuefields[i.name.to_sym] = i unless i.children.count < 2 }
                 @lobbyists = []
                 unless issuefields[:lobbyists].nil?
                   issuefields[:lobbyists].children.each do |l|
