@@ -59,9 +59,17 @@ module Gucci
       def parse_problem(e,problemfield)
         problem = {}
         problem["field"] = problemfield
-        problem["message"] = e.message.to_s
-        problem["backtrace"] = e.backtrace.inspect.to_s
-        parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
+        begin
+          problem["message"] = e.message.to_s
+          problem["backtrace"] = e.backtrace.inspect.to_s
+        rescue
+          problem["message"] = e
+        end
+        if e.respond_to? :message
+          parsingproblems.push(problem) unless e.message.to_s == 'undefined method `children\' for nil:NilClass'
+        else
+          parsingproblems.push(problem)
+        end
       end
 
 #grab our single fields(organizationName, reportYear, income, expenses, etc), remove carriage returns, assign keys
@@ -219,7 +227,7 @@ module Gucci
           data = []
           if multi(0).name == 'alis'
             multi(0).children.each do |m|
-              if m.node_name != 'text'
+              if m.node_name == 'ali_info'
                 issuefields = Gucci::Mapper.new
                 m.children.map do |i|
                   if i.name != 'lobbyists'
@@ -258,6 +266,8 @@ module Gucci
                   issuefields[:specific_issues] = @descriptions
                 end
                 data.push(issuefields)
+              else
+                parse_problem(m,"parse_issues") unless m.name == 'text'
               end
             end
           end
