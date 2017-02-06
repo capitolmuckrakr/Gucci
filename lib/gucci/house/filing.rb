@@ -222,22 +222,28 @@ module Gucci
               if m.node_name != 'text'
                 issuefields = Gucci::Mapper.new
                 m.children.map do |i|
-                  issuefields[i.name.to_sym] = nil if i.children.count < 2
-                  unless i.content.strip.empty?
-                    issuefields[i.name.to_sym] = i.content if i.children.count < 2
+                  if i.name != 'lobbyists'
+                    issuefields[i.name.to_sym] = nil if i.children.count < 2
+                    unless i.content.strip.empty?
+                      issuefields[i.name.to_sym] = i.content if i.children.count < 2
+                    end
+                    issuefields[i.name.to_sym] = i unless i.children.count < 2
+                  else
+                    issuefields[i.name.to_sym] = i
                   end
-                  issuefields[i.name.to_sym] = i unless i.children.count < 2
                 end
                 @lobbyists = []
                 unless issuefields[:lobbyists].nil?
-                  issuefields[:lobbyists].children.each do |l|
-                    next if l.content == 'N'
-                    @lobbyist = Gucci::Mapper.new
-                    l.children.each do |f|
-                      @lobbyist[f.name.to_sym] = nil
-                      @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+                  if issuefields[:lobbyists].respond_to? :children
+                    issuefields[:lobbyists].children.each do |l|
+                      next if l.content == 'N'
+                      @lobbyist = Gucci::Mapper.new
+                      l.children.each do |f|
+                        @lobbyist[f.name.to_sym] = nil
+                        @lobbyist[f.name.to_sym] = f.content unless f.content.strip.empty?
+                      end
+                      @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
                     end
-                    @lobbyists.push(@lobbyist) unless @lobbyist.values.join.strip == 'N'
                   end
                 end
                 issuefields[:lobbyists] = @lobbyists #need to assign one lobbyist hash for empties
