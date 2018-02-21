@@ -24,7 +24,7 @@ module Gucci
       end
 
       def browser
-        browser = Watir::Browser.new :phantomjs
+        browser = Watir::Browser.new :firefox
         url = ''
         if @search_type =~ /contribution/
           url = 'disclosures.house.gov/lc/lcsearch.aspx'
