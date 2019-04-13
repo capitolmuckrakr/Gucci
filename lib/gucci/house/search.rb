@@ -544,7 +544,7 @@ module Gucci
       VALID_DISCLOSURE_PARAMS = {
         'Filing Period' => ["Mid-Year", "Year-End", "1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"],
         'Filing Type' => REPORT_TYPES.values,
-        'Filing Year' => (2013..Date.today.year).map{ |y| y },
+        'Filing Year' => (2014..Date.today.year).map{ |y| y },
         'Issue Code' => ISSUES.values,
         'Affiliated Country' => COUNTRIES.values,
         'Client Country' => COUNTRIES.values,
