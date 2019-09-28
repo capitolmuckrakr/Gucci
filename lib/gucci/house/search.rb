@@ -117,17 +117,19 @@ module Gucci
           keys = disclosure_keys
         end
         parsed_results = []
-        @filings.each do |row|
-          next if row.empty?
-          row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
-          row = [row[0..6],row[7..-1].join(",")].flatten unless @search_type.to_s =~ /contribution/
-          search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
-          search_result[:lobbyists] = search_result.lobbyists.split("\n").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
-          search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount)
-          if block_given?
-            yield search_result
-          else
-            parsed_results << search_result
+        unless @status.nil?
+          @filings.each do |row|
+            next if row.empty?
+            row = [row[0..2],row[3..-1].join(",")].flatten if @search_type == :contribution_filings
+            row = [row[0..6],row[7..-1].join(",")].flatten unless @search_type.to_s =~ /contribution/
+            search_result ||= Gucci::Mapper[*keys.zip(row).flatten]
+            search_result[:lobbyists] = search_result.lobbyists.split("\n").uniq.sort.map{|l| l.strip} if search_result.keys.include?(:lobbyists)
+            search_result[:amount] = search_result.amount.strip if search_result.keys.include?(:amount)
+            if block_given?
+              yield search_result
+            else
+              parsed_results << search_result
+            end
           end
         end
         block_given? ? nil : parsed_results
