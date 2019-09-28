@@ -10,17 +10,18 @@ Gucci is named after one of the seminal works of lobbying reporting, [Showdown a
 
 ## Installation
 
-Searching with Gucci uses [phantomjs](http://phantomjs.org/), which must be installed and accessible on your system's path.
+Searching with Gucci uses [firefox](https://www.mozilla.org/en-US/firefox/) and [geckodriver](https://github.com/mozilla/geckodriver/releases/latest), both of which must be installed and accessible on your system's path.
 
-Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. Gucci has received limited testing on OS 10.9 and has not been tested on Windows.
+Gucci was mostly developed on Ubuntu 12.04 using Ruby 2.1.1, but will work on Ruby versions 1.9.2 and later. Gucci has received limited testing on Apple's OS 10.9 and has not been tested on Windows.
 
-To install on Ubuntu 12.04 or greater:
+To install on Ubuntu:
 
     
     git clone https://github.com/capitolmuckrakr/Gucci.git
     cd Gucci
-    rake install
     bundle install
+    rake install
+    
 
 ## Usage
 
@@ -32,21 +33,21 @@ To install on Ubuntu 12.04 or greater:
 
 A. Lobbying filing disclosures
 
-Perform a search for form LD-1 or LD-2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2013:
+Perform a search for form LD-1 or LD-2 filings (lobbying registrations and lobbying activity reports) submitted for Lockheed Martin in 2019:
 
-    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2013)
+    search = Gucci::House::Search.new(:client_name => "Lockheed Martin", :filing_year => 2019)
 
 B. Contribution filing disclosures
 
-Perform a search for form LD-203 filings submitted by Lockheed Martin and its individual lobbyists in 2013:
+Perform a search for form LD-203 filings submitted by Lockheed Martin and its individual lobbyists in 2019:
 
-    search = Gucci::House::Search.new(:organization_name => "Lockheed Martin", :filing_year => 2013, :contributions => true)
+    search = Gucci::House::Search.new(:organization_name => "Lockheed Martin", :filing_year => 2019, :contributions => true)
 
 C. Contributions search
 
-Perform a search for honorary contributions and payments to Sen. John McCain listed on multiple form LD-203 filings:
+Perform a search for honorary contributions and payments to Sen. Chuck Grassley listed on multiple form LD-203 filings:
 
-    search = Gucci::House::Search.new(:honoree=>"McCain",:contribution_type=>"Honorary",:contributions=>"contributions")
+    search = Gucci::House::Search.new(:honoree=>"Grassley",:contribution_type=>"Honorary",:contributions=>"contributions")
 
 The search is performed when `Gucci::House::Search.new` is called. You can then access the results of the search with `search.results`, an array of search result objects:
 
@@ -197,7 +198,7 @@ Up to five parameters may be used and the search functionality will return up to
 
     search = Gucci::House::Search.new(:filing_year => 2020)
     ArgumentError: 1 error(s)
-    2020 is invalid for Filing Year, permitted values are 2009, 2010, 2011, 2012, 2013, 2014, 2015
+    2020 is invalid for Filing Year, permitted values are 2014, 2015, 2016, 2017, 2018, 2019
 
 ### Filing attributes
 *Attributes are dynamically assigned and may vary for different filings of the same type*
