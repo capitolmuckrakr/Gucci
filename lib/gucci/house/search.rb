@@ -24,7 +24,10 @@ module Gucci
       end
 
       def browser
-        browser = Watir::Browser.new :firefox
+        profile = Selenium::WebDriver::Firefox::Profile.new
+        options = Selenium::WebDriver::Firefox::Options.new(args: ['-headless'], profile: profile)
+        driver = Selenium::WebDriver::Driver.for :firefox, options: options
+        browser = Watir::Browser.new driver
         url = ''
         if @search_type =~ /contribution/
           url = 'disclosures.house.gov/lc/lcsearch.aspx'
