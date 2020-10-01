@@ -1,0 +1,16 @@
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/1@/301022673.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/1A/301024436.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/1T/301003576.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/Q2/301060276.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/Q3/301060707.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/Q4/301062903.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/RA/301023269.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2019/RR/301006033.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2007/M@/300524040.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2005/MA/301060767.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2007/MM/200039048.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2006/MT/301060774.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2007/Y@/300847815.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2004/YA/300590013.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2005/YT/300631252.xml
+https://disclosurespreview.house.gov/ld/ldxmlrelease/2007/YY/300567473.xml

@@ -1,0 +1,36 @@
+BILLS: Congressional Bills
+BILLSTATUS: Congressional Bill Status
+BUDGET: United States Budget
+CCAL: Congressional Calendars
+CDIR: Congressional Directory
+CDOC: Congressional Documents
+CFR: Code of Federal Regulations
+CHRG: Congressional Hearings
+COMPS: Statutes Compilations
+CPD: Compilation of Presidential Documents
+CPRT: Congressional Committee Prints
+CREC: Congressional Record
+CRECB: Congressional Record (Bound Edition)
+CRI: Congressional Record Index
+CRPT: Congressional Reports
+CZIC: Coastal Zone Information Center
+ECFR: Electronic Code of Federal Regulations
+ECONI: Economic Indicators
+ERIC: Education Reports from ERIC
+ERP: Economic Report of the President
+FR: Federal Register
+GAOREPORTS: Government Accountability Office Reports and Comptroller General Decisions
+GOVMAN: United States Government Manual
+GOVPUB: Bulk Submission
+GPO: Additional Government Publications
+HJOURNAL: Journal of the House of Representatives
+HMAN: House Rules and Manual
+HOB: History of Bills
+LSA: List of CFR Sections Affected
+PAI: Privacy Act Issuances
+PLAW: Public and Private Laws
+PPP: Public Papers of the Presidents of the United States
+SMAN: Senate Manual
+STATUTE: Statutes at Large
+USCODE: United States Code
+USCOURTS: United States Courts Opinions
